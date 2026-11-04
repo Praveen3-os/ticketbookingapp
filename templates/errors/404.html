@@ -1,32 +1,29 @@
 {% extends "base.html" %}
-{% block title %}404 – Page Not Found{% endblock %}
+{% block title %}404 – Movie or Page Not Found{% endblock %}
+
 {% block content %}
-<div class="container">
-  <div class="error-page">
-    <div class="error-code">404</div>
-    <h1 class="error-title">Page Not Found</h1>
-    <p class="error-desc">
-      The page you're looking for doesn't exist or has been moved.
-      Use the navigation above or ask our assistant for help.
-    </p>
-    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-      <a href="{% url 'core:home' %}" class="btn btn-primary">Go Home</a>
-      <a href="{% url 'tickets:event_list' %}" class="btn btn-secondary">Browse Events</a>
-      <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-secondary">
-        Ask the Assistant
-      </button>
-    </div>
-    <div style="margin-top:3rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);max-width:420px;margin-left:auto;margin-right:auto">
-      <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:.75rem">
-        🤖 TicketBot can help! Try asking:
-      </p>
-      <ul style="text-align:left;color:var(--text-muted);font-size:.88rem;padding-left:1.2rem">
-        <li>"How do I book a ticket?"</li>
-        <li>"What does error 404 mean?"</li>
-        <li>"How do I find my booking?"</li>
-      </ul>
-    </div>
+<div class="container" style="max-width:680px;text-align:center;padding:4rem 1rem">
+  <div style="font-size:6rem;font-weight:900;color:var(--primary);line-height:1;margin-bottom:1rem">404</div>
+  <h1 style="font-size:2rem;font-weight:900;color:#fff;margin-bottom:.5rem">Page or Movie Not Found</h1>
+  <p style="color:var(--text-muted);font-size:1.05rem;max-width:500px;margin:0 auto 2rem">
+    The page you are looking for has been moved or does not exist. Use the links below or ask our AI assistant for help.
+  </p>
+
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem">
+    <a href="{% url 'core:home' %}" class="btn btn-primary btn-pill">Back to Home</a>
+    <a href="{% url 'tickets:movie_list' %}" class="btn btn-secondary btn-pill">Browse Movies</a>
+    <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-secondary btn-pill">
+      💬 Ask the Assistant
+    </button>
+  </div>
+
+  <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;text-align:left;max-width:460px;margin:0 auto">
+    <p style="font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.5rem">🤖 CineBot can help with:</p>
+    <ul style="color:var(--text-muted);font-size:.85rem;padding-left:1.2rem;line-height:1.7">
+      <li>"What does error 404 mean?"</li>
+      <li>"Which movies are showing in Coimbatore?"</li>
+      <li>"Showtimes at Broadway Cinemas or KG Cinemas"</li>
+    </ul>
   </div>
 </div>
 {% endblock %}
-

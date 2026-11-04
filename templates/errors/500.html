@@ -1,29 +1,27 @@
 {% extends "base.html" %}
-{% block title %}500 – Server Error{% endblock %}
+{% block title %}500 – Internal Server Error{% endblock %}
+
 {% block content %}
-<div class="container">
-  <div class="error-page">
-    <div class="error-code">500</div>
-    <h1 class="error-title">Internal Server Error</h1>
-    <p class="error-desc">
-      Something went wrong on our end. Our team has been automatically notified.
-      Please try again in a few minutes.
+<div class="container" style="max-width:680px;text-align:center;padding:4rem 1rem">
+  <div style="font-size:6rem;font-weight:900;color:var(--primary);line-height:1;margin-bottom:1rem">500</div>
+  <h1 style="font-size:2rem;font-weight:900;color:#fff;margin-bottom:.5rem">Internal Server Error</h1>
+  <p style="color:var(--text-muted);font-size:1.05rem;max-width:520px;margin:0 auto 2rem">
+    Something unexpected happened on our server. Our team has been notified. You can return to safety or ask our AI assistant for assistance.
+  </p>
+
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem">
+    <a href="{% url 'core:home' %}" class="btn btn-primary btn-pill">Back to Home</a>
+    <a href="{% url 'tickets:support_ticket' %}" class="btn btn-secondary btn-pill">Submit Ticket</a>
+    <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-secondary btn-pill">
+      💬 Ask the Assistant
+    </button>
+  </div>
+
+  <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;text-align:left;max-width:460px;margin:0 auto">
+    <p style="font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.5rem">⚠️ Error Code 500 Information:</p>
+    <p style="color:var(--text-muted);font-size:.85rem;line-height:1.6">
+      Our request logging middleware has registered this event. If this issue persists, please use the button above to submit a support ticket.
     </p>
-    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-      <a href="{% url 'core:home' %}" class="btn btn-primary">Go Home</a>
-      <a href="{% url 'tickets:support_ticket' %}" class="btn btn-secondary">Submit a Ticket</a>
-      <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-secondary">
-        Ask the Assistant
-      </button>
-    </div>
-    <div style="margin-top:3rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);max-width:420px;margin-left:auto;margin-right:auto">
-      <p style="color:var(--text-muted);font-size:.88rem">
-        Error code: <code style="color:var(--danger)">500</code> — Internal Server Error<br>
-        If this keeps happening, please <a href="{% url 'tickets:support_ticket' %}">raise a support ticket</a>
-        and include any steps you took before seeing this page.
-      </p>
-    </div>
   </div>
 </div>
 {% endblock %}
-
