@@ -10,7 +10,7 @@
         <div style="font-size:3.5rem;margin-bottom:.5rem">🎉</div>
         <h1 style="font-size:1.7rem;font-weight:800">Movie Ticket Confirmed!</h1>
         <p style="color:var(--text-muted);font-size:.9rem;margin-top:.3rem">
-          Show this e-ticket on your mobile at the cinema gate.
+          Payment completed successfully. Show this e-ticket on your mobile at the cinema gate.
         </p>
       </div>
 
@@ -39,6 +39,10 @@
           <span class="booking-value" style="color:var(--primary);font-size:1.1rem;font-weight:800">{{ booking.booking_ref }}</span>
         </div>
         <div class="booking-row">
+          <span class="booking-label">Transaction / Payment ID</span>
+          <span class="booking-value" style="font-family:monospace;font-size:.9rem">{{ booking.payment_id }}</span>
+        </div>
+        <div class="booking-row">
           <span class="booking-label">Cinema Theater</span>
           <span class="booking-value">{{ booking.showtime.theater.name }}, {{ booking.showtime.theater.location }}</span>
         </div>
@@ -47,8 +51,14 @@
           <span class="booking-value">{{ booking.showtime.show_date|date:"l, d M Y" }} at {{ booking.showtime.show_time|time:"h:i A" }}</span>
         </div>
         <div class="booking-row">
-          <span class="booking-label">Seats Reserved</span>
-          <span class="booking-value">{{ booking.seats }} Ticket(s)</span>
+          <span class="booking-label">Reserved Seat Numbers</span>
+          <span class="booking-value" style="color:var(--success);font-weight:800;font-size:1.05rem">
+            {% if booking.seat_numbers %}{{ booking.seat_numbers }}{% else %}{{ booking.seats }} Seat(s){% endif %}
+          </span>
+        </div>
+        <div class="booking-row">
+          <span class="booking-label">Payment Method</span>
+          <span class="booking-value">{{ booking.payment_method }}</span>
         </div>
         <div class="booking-row">
           <span class="booking-label">Booking Status</span>
@@ -58,7 +68,7 @@
         </div>
         <div class="booking-row">
           <span class="booking-label">Total Amount Paid</span>
-          <span class="booking-value" style="font-size:1.25rem;color:var(--success)">₹{{ booking.total_price|floatformat:0 }}</span>
+          <span class="booking-value" style="font-size:1.3rem;color:var(--success)">₹{{ booking.total_price|floatformat:0 }}</span>
         </div>
       </div>
 

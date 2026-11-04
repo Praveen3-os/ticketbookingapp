@@ -115,11 +115,21 @@ class Booking(models.Model):
         ('confirmed', 'Confirmed'),
         ('cancelled', 'Cancelled'),
     ]
+    PAYMENT_CHOICES = [
+        ('upi_gpay', 'Google Pay (UPI)'),
+        ('upi_phonepe', 'PhonePe (UPI)'),
+        ('upi_paytm', 'Paytm (UPI)'),
+        ('card', 'Credit / Debit Card'),
+        ('netbanking', 'Net Banking'),
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings')
     showtime = models.ForeignKey(ShowTime, on_delete=models.CASCADE, related_name='bookings')
     seats = models.PositiveIntegerField(default=1)
+    seat_numbers = models.CharField(max_length=150, default='', help_text='e.g. A3, A4, B6')
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    payment_method = models.CharField(max_length=50, default='Google Pay (UPI)')
+    payment_id = models.CharField(max_length=100, blank=True, default='')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='confirmed')
     booking_ref = models.CharField(max_length=20, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -128,12 +138,15 @@ class Booking(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Booking {self.booking_ref} – {self.user} – {self.showtime}"
+        return f"Booking {self.booking_ref} – {self.user} – {self.showtime.movie.title}"
 
     def save(self, *args, **kwargs):
         if not self.booking_ref:
             import uuid
             self.booking_ref = 'TIX-' + str(uuid.uuid4()).replace('-', '').upper()[:8]
+        if not self.payment_id:
+            import uuid
+            self.payment_id = 'PAY-' + str(uuid.uuid4()).replace('-', '').upper()[:10]
         if not self.total_price:
             self.total_price = self.showtime.price * self.seats
         super().save(*args, **kwargs)

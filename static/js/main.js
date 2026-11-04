@@ -1,4 +1,4 @@
-/* ── Chat Widget JS ── */
+/* ── CineBot Chat Widget JS with Instant Payment ── */
 (function () {
   'use strict';
 
@@ -9,15 +9,18 @@
   const input    = document.getElementById('chat-input');
   const sendBtn  = document.getElementById('chat-send');
 
-  if (!toggle) return;   // widget not on page
+  if (!toggle) return;
 
   // ── Open / close ───────────────────────────────────────────────────────
   toggle.addEventListener('click', () => {
     chatBox.classList.toggle('open');
     if (chatBox.classList.contains('open') && messages.children.length === 0) {
       appendBot(
-        "👋 Hi! I'm TicketBot. Ask me anything about bookings, payments, error codes or events.",
-        null
+        "👋 Vanakkam! I'm **CineBot**, your Tamil movie assistant.\n\n" +
+        "You can ask me about **movies, show timings, Chennai theaters, error codes**, or even **book tickets and pay directly inside this chat!**",
+        null,
+        null,
+        true // offer payment action
       );
     }
     if (chatBox.classList.contains('open')) input.focus();
@@ -49,7 +52,7 @@
         if (data.error) {
           appendBot('⚠️ ' + data.error, null);
         } else {
-          appendBot(data.reply, data.message_id, data.ticket_ref);
+          appendBot(data.reply, data.message_id, data.ticket_ref, data.show_payment_action);
         }
       })
       .catch(() => {
@@ -72,11 +75,10 @@
     scroll();
   }
 
-  function appendBot(text, messageId, ticketRef) {
+  function appendBot(text, messageId, ticketRef, showPaymentAction) {
     const div = document.createElement('div');
     div.className = 'msg msg-bot';
 
-    // Simple markdown-ish: **bold**
     const html = text
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\n/g, '<br>');
@@ -85,8 +87,100 @@
     if (ticketRef) {
       const ref = document.createElement('div');
       ref.className = 'ticket-ref';
-      ref.textContent = '🎫 Reference: ' + ticketRef;
+      ref.innerHTML = '🎫 <strong>Support Ticket:</strong> ' + ticketRef;
       div.appendChild(ref);
+    }
+
+    // In-Chat Payment Action Card
+    if (showPaymentAction) {
+      const payBox = document.createElement('div');
+      payBox.style.cssText = 'margin-top:10px;padding:10px;background:#1e293b;border:1px solid #475569;border-radius:8px;font-size:0.82rem;';
+      payBox.innerHTML = `
+        <div style="font-weight:700;color:#6366f1;margin-bottom:6px">⚡ Instant Book & Pay in Chat</div>
+        <div style="margin-bottom:6px">
+          <label style="font-size:0.75rem;color:#94a3b8">Movie:</label>
+          <select id="chatMovieSelect" style="width:100%;padding:4px;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:4px;font-size:0.8rem">
+            <option value="1">Leo (10:00 AM FDFS @ Rohini)</option>
+            <option value="2">Jailer (07:30 PM @ Sathyam)</option>
+            <option value="5">Amaran (04:30 PM @ AGS)</option>
+            <option value="6">GOAT (01:30 PM @ Kamala)</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:8px">
+          <div style="flex:1">
+            <label style="font-size:0.75rem;color:#94a3b8">Seats:</label>
+            <select id="chatSeatsSelect" style="width:100%;padding:4px;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:4px;font-size:0.8rem">
+              <option value="1">1 Seat (₹150)</option>
+              <option value="2" selected>2 Seats (₹300)</option>
+              <option value="3">3 Seats (₹450)</option>
+              <option value="4">4 Seats (₹600)</option>
+            </select>
+          </div>
+          <div style="flex:1">
+            <label style="font-size:0.75rem;color:#94a3b8">Pay Via:</label>
+            <select id="chatPayMethod" style="width:100%;padding:4px;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:4px;font-size:0.8rem">
+              <option value="Google Pay (UPI)">GPay UPI</option>
+              <option value="PhonePe (UPI)">PhonePe</option>
+              <option value="Paytm (UPI)">Paytm</option>
+              <option value="Credit / Debit Card">Card</option>
+            </select>
+          </div>
+        </div>
+        <button id="chatPayBtn" style="width:100%;background:#22c55e;color:#fff;border:none;border-radius:6px;padding:6px;font-weight:700;cursor:pointer;font-size:0.85rem">
+          💳 Pay ₹300 & Confirm Booking
+        </button>
+      `;
+
+      const movieSelect = payBox.querySelector('#chatMovieSelect');
+      const seatsSelect = payBox.querySelector('#chatSeatsSelect');
+      const payMethodSelect = payBox.querySelector('#chatPayMethod');
+      const payBtn = payBox.querySelector('#chatPayBtn');
+
+      seatsSelect.addEventListener('change', () => {
+        const count = parseInt(seatsSelect.value);
+        payBtn.textContent = `💳 Pay ₹${count * 150} & Confirm Booking`;
+      });
+
+      payBtn.addEventListener('click', () => {
+        payBtn.disabled = true;
+        payBtn.textContent = '⏳ Processing payment...';
+
+        fetch('/assistant/instant_pay/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          body: JSON.stringify({
+            movie_id: movieSelect.value,
+            seats: seatsSelect.value,
+            payment_method: payMethodSelect.value,
+          }),
+        })
+          .then(r => r.json())
+          .then(res => {
+            if (res.status === 'success') {
+              payBox.innerHTML = `
+                <div style="background:#064e3b;border:1px solid #059669;padding:8px;border-radius:6px;color:#a7f3d0">
+                  <div style="font-weight:700;font-size:0.88rem">✅ Payment Successful!</div>
+                  <div style="margin-top:4px">🎬 <strong>${res.movie_title}</strong></div>
+                  <div>🏛️ ${res.theater} • ⏰ ${res.timing}</div>
+                  <div>🎟️ Seats: <strong>${res.seats}</strong></div>
+                  <div>💰 Paid: <strong>₹${res.total}</strong> via ${res.payment_method}</div>
+                  <div style="margin-top:4px;font-size:0.75rem;color:#6ee7b7">Ref: <strong>${res.booking_ref}</strong> | Txn: ${res.payment_id}</div>
+                </div>
+              `;
+            } else {
+              payBox.innerHTML = `<span style="color:#f87171">Payment failed: ${res.error || 'Please try again'}</span>`;
+            }
+            scroll();
+          })
+          .catch(() => {
+            payBox.innerHTML = '<span style="color:#f87171">Network error. Please try again.</span>';
+          });
+      });
+
+      div.appendChild(payBox);
     }
 
     if (messageId) {
@@ -110,7 +204,7 @@
   function showTyping() {
     typingEl = document.createElement('div');
     typingEl.className = 'msg-typing';
-    typingEl.textContent = 'TicketBot is typing…';
+    typingEl.textContent = 'CineBot is typing…';
     messages.appendChild(typingEl);
     scroll();
   }
@@ -151,7 +245,6 @@
   document.querySelectorAll('.faq-question').forEach(btn => {
     btn.addEventListener('click', () => {
       const isOpen = btn.getAttribute('aria-expanded') === 'true';
-      // close all
       document.querySelectorAll('.faq-question').forEach(b => {
         b.setAttribute('aria-expanded', 'false');
         b.nextElementSibling.classList.remove('open');
@@ -171,4 +264,3 @@
   }
 
 })();
-

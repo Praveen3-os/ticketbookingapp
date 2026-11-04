@@ -6,7 +6,7 @@
 <div class="page-header">
   <div class="container">
     <h1>🎟️ My Bookings</h1>
-    <p>View, manage, and access your Tamil movie tickets.</p>
+    <p>View, manage, and access your Tamil movie tickets & payment receipts.</p>
   </div>
 </div>
 
@@ -22,6 +22,7 @@
           <th>Theater</th>
           <th>Date & Time</th>
           <th>Seats</th>
+          <th>Payment</th>
           <th>Total</th>
           <th>Status</th>
           <th>Actions</th>
@@ -47,7 +48,10 @@
           </td>
           <td style="color:var(--text-muted);font-size:.88rem">{{ booking.showtime.theater.name }}</td>
           <td style="color:var(--text-muted);font-size:.88rem">{{ booking.showtime.show_date|date:"d M Y" }}<br>{{ booking.showtime.show_time|time:"h:i A" }}</td>
-          <td>{{ booking.seats }}</td>
+          <td>
+            <strong style="color:var(--success)">{% if booking.seat_numbers %}{{ booking.seat_numbers }}{% else %}{{ booking.seats }} seats{% endif %}</strong>
+          </td>
+          <td style="font-size:.82rem;color:var(--text-muted)">{{ booking.payment_method }}</td>
           <td><strong>₹{{ booking.total_price|floatformat:0 }}</strong></td>
           <td>
             <span class="badge {% if booking.status == 'confirmed' %}badge-success{% elif booking.status == 'cancelled' %}badge-danger{% else %}badge-warning{% endif %}">

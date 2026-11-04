@@ -1,16 +1,140 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Select Seats – {{ showtime.movie.title }}{% endblock %}
+{% block title %}Select Seats & Timing – {{ showtime.movie.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .seat-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    margin: 1.5rem 0;
+  }
+  .seat-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .row-label {
+    width: 24px;
+    text-align: center;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: .85rem;
+  }
+  .seat-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-card2);
+    color: var(--text);
+    font-size: .75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .seat-btn:hover:not(.booked) {
+    border-color: var(--primary);
+    background: rgba(99,102,241,0.2);
+    transform: scale(1.08);
+  }
+  .seat-btn.selected {
+    background: var(--success) !important;
+    border-color: var(--success) !important;
+    color: #fff !important;
+    box-shadow: 0 0 10px rgba(34,197,94,0.5);
+  }
+  .seat-btn.booked {
+    background: #334155;
+    color: #64748b;
+    border-color: #1e293b;
+    cursor: not-allowed;
+    opacity: 0.6;
+    text-decoration: line-through;
+  }
+  .seat-legend {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin: 1rem 0;
+    font-size: .85rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .legend-box {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+  }
+  .screen-curve {
+    height: 8px;
+    width: 80%;
+    margin: 0 auto;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    border-radius: 50% 50% 0 0;
+    box-shadow: 0 -4px 16px var(--primary);
+  }
+  .timing-pill {
+    padding: .5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card2);
+    color: var(--text);
+    font-weight: 600;
+    font-size: .88rem;
+    text-decoration: none !important;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all .2s;
+  }
+  .timing-pill:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .timing-pill.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 0 12px rgba(99,102,241,0.4);
+  }
+  .pay-option {
+    border: 1px solid var(--border);
+    background: var(--bg-card2);
+    border-radius: 8px;
+    padding: .75rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    transition: border-color .2s;
+  }
+  .pay-option:hover {
+    border-color: var(--primary);
+  }
+  .pay-option input[type="radio"] {
+    accent-color: var(--primary);
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width:750px;margin:0 auto;padding-top:2rem">
-  <a href="{% url 'tickets:movie_detail' showtime.movie.pk %}" style="color:var(--text-muted);font-size:.9rem">&larr; Back to Showtimes</a>
+<div class="container" style="max-width:850px;margin:0 auto;padding-top:2rem">
+  <a href="{% url 'tickets:movie_detail' showtime.movie.pk %}" style="color:var(--text-muted);font-size:.9rem">&larr; Back to Movie Details</a>
 
+  <!-- Header Info -->
   <div class="card" style="margin-top:1.5rem">
     <div class="card-body">
-      <!-- Movie & Showtime Info Bar -->
-      <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)">
-        <div style="flex:0 0 90px;height:120px;overflow:hidden;border-radius:8px;background:#000">
+      <div style="display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap">
+        <div style="flex:0 0 80px;height:110px;overflow:hidden;border-radius:8px;background:#000">
           {% if showtime.movie.poster_image %}
             <img src="{% static showtime.movie.poster_static_path %}" alt="{{ showtime.movie.title }}"
                  style="width:100%;height:100%;object-fit:cover" />
@@ -19,86 +143,221 @@
           {% endif %}
         </div>
         <div>
-          <h1 style="font-size:1.6rem;font-weight:800;margin:0">{{ showtime.movie.title }}</h1>
+          <h1 style="font-size:1.7rem;font-weight:800;margin:0">{{ showtime.movie.title }}</h1>
           {% if showtime.movie.title_tamil %}
-            <p style="color:var(--primary);font-size:.95rem;font-weight:600;margin:.2rem 0">{{ showtime.movie.title_tamil }}</p>
+            <p style="color:var(--primary);font-size:1rem;font-weight:600;margin:.2rem 0">{{ showtime.movie.title_tamil }}</p>
           {% endif %}
           <p style="color:var(--text-muted);font-size:.88rem;margin:0">
             🏛️ <strong>{{ showtime.theater.name }}</strong>, {{ showtime.theater.location }}
           </p>
           <p style="color:var(--text-muted);font-size:.85rem;margin-top:.2rem">
-            📅 {{ showtime.show_date|date:"l, d M Y" }} • ⏰ {{ showtime.show_time|time:"h:i A" }}
+            📅 {{ showtime.show_date|date:"l, d M Y" }} • ₹{{ showtime.price|floatformat:0 }} per seat
           </p>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div style="background:var(--bg-card2);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center">
+  <!-- SHOW TIMINGS PICKER -->
+  <div class="card" style="margin-top:1rem">
+    <div class="card-body">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:.8rem;color:var(--primary);text-transform:uppercase;letter-spacing:.05em">
+        ⏰ Select Show Timing for {{ showtime.show_date|date:"d M Y" }}
+      </h3>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+        {% for st in other_showtimes %}
+          <a href="{% url 'tickets:select_seats' st.pk %}"
+             class="timing-pill {% if st.pk == showtime.pk %}active{% endif %}">
+            <span style="font-size:1rem">{{ st.show_time|time:"h:i A" }}</span>
+            <span style="font-size:.72rem;opacity:.85">{{ st.get_show_label_display }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE CINEMA SEAT SELECTION -->
+  <div class="card" style="margin-top:1rem">
+    <div class="card-body">
+      <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:1rem;text-align:center">
+        🎟️ Choose Your Seats
+      </h3>
+
+      <!-- Screen Graphic -->
+      <div style="margin-bottom:2rem;text-align:center">
+        <div class="screen-curve"></div>
+        <p style="font-size:.75rem;letter-spacing:.25em;color:var(--text-muted);text-transform:uppercase;margin-top:.6rem">
+          All Eyes This Way • Cinema Screen
+        </p>
+      </div>
+
+      <!-- Legend -->
+      <div class="seat-legend">
+        <div class="legend-item">
+          <div class="legend-box" style="background:var(--bg-card2);border:1px solid var(--border)"></div>
+          <span>Available</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-box" style="background:var(--success)"></div>
+          <span>Selected</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-box" style="background:#334155"></div>
+          <span>Sold Out</span>
+        </div>
+      </div>
+
+      <!-- Visual Seats Grid -->
+      <div class="seat-grid" id="seatGrid">
+        {% for row in rows %}
+        <div class="seat-row">
+          <span class="row-label">{{ row }}</span>
+          {% for col in cols %}
+            {% with seat_id=row|add:col %}
+              <button type="button"
+                      class="seat-btn {% if seat_id in booked_seats %}booked{% endif %}"
+                      data-seat="{{ seat_id }}"
+                      {% if seat_id in booked_seats %}disabled title="Seat {{ seat_id }} already booked"{% else %}title="Seat {{ seat_id }}"{% endif %}>
+                {{ col }}
+              </button>
+            {% endwith %}
+          {% endfor %}
+          <span class="row-label">{{ row }}</span>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Selected Seats Summary Banner -->
+      <div style="background:var(--bg-card2);border-radius:10px;padding:1rem 1.25rem;margin:1.5rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
         <div>
-          <span style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase">Ticket Price</span>
-          <p style="font-size:1.4rem;font-weight:700;color:var(--primary);margin:0">₹{{ showtime.price|floatformat:0 }} <span style="font-size:.8rem;color:var(--text-muted)">/ seat</span></p>
+          <span style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase">Selected Seats</span>
+          <p id="selectedSeatsDisplay" style="font-size:1.15rem;font-weight:700;color:var(--primary);margin:.2rem 0">None selected</p>
         </div>
         <div style="text-align:right">
-          <span style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase">Availability</span>
-          <p style="font-size:1rem;font-weight:700;margin:0">
-            {% if showtime.is_sold_out %}
-              <span class="badge badge-danger">Sold Out</span>
-            {% elif showtime.is_filling_fast %}
-              <span class="badge badge-warning">⚡ {{ showtime.available_seats }} seats left</span>
-            {% else %}
-              <span class="badge badge-success">{{ showtime.available_seats }} available</span>
-            {% endif %}
-          </p>
+          <span style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase">Total Payable</span>
+          <p id="totalPriceDisplay" style="font-size:1.35rem;font-weight:800;color:var(--success);margin:.2rem 0">₹0</p>
         </div>
       </div>
 
-      <!-- Cinema Screen UI Graphic -->
-      <div style="text-align:center;margin:2rem 0 2.5rem">
-        <div style="height:6px;width:75%;background:linear-gradient(90deg, transparent, var(--primary), transparent);margin:0 auto;border-radius:4px;box-shadow:0 0 16px var(--primary)"></div>
-        <p style="font-size:.75rem;letter-spacing:.2em;color:var(--text-muted);text-transform:uppercase;margin-top:.6rem">All Eyes This Way • Cinema Screen</p>
-      </div>
+      <!-- BOOKING & PAYMENT FORM -->
+      {% if user.is_authenticated %}
+      <form method="post" action="{% url 'tickets:book_showtime' showtime.pk %}" id="checkoutForm">
+        {% csrf_token %}
+        <input type="hidden" name="seat_numbers" id="seatNumbersInput" value="" />
+        <input type="hidden" name="seats" id="seatsCountInput" value="0" />
 
-      {% if not showtime.is_sold_out %}
-        {% if user.is_authenticated %}
-        <form method="post" action="{% url 'tickets:book_showtime' showtime.pk %}" id="bookingForm">
-          {% csrf_token %}
-          <div class="form-group">
-            <label for="id_seats" style="font-weight:600">Select Number of Tickets (Max 10 per booking)</label>
-            <div style="display:flex;align-items:center;gap:1.5rem;margin-top:.4rem">
-              {{ form.seats }}
-              <div style="font-size:1.1rem;color:var(--text-muted)">
-                Total Amount: <strong id="totalCost" style="color:var(--success);font-size:1.3rem">₹{{ showtime.price|floatformat:0 }}</strong>
-              </div>
+        <!-- PAYMENT METHOD SELECTION -->
+        <h4 style="font-size:1rem;font-weight:700;margin:1.5rem 0 .75rem;color:var(--text)">
+          💳 Select Payment Method
+        </h4>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:.75rem;margin-bottom:1.5rem">
+          <label class="pay-option">
+            <input type="radio" name="payment_method" value="Google Pay (UPI)" checked />
+            <div>
+              <strong>Google Pay</strong>
+              <div style="font-size:.75rem;color:var(--text-muted)">Instant UPI Transfer</div>
             </div>
-          </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;font-size:1.05rem;padding:.85rem;margin-top:1rem">
-            🎟️ Proceed to Pay & Confirm Tickets
-          </button>
-        </form>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="payment_method" value="PhonePe (UPI)" />
+            <div>
+              <strong>PhonePe</strong>
+              <div style="font-size:.75rem;color:var(--text-muted)">UPI / QR Scan</div>
+            </div>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="payment_method" value="Paytm (UPI)" />
+            <div>
+              <strong>Paytm UPI</strong>
+              <div style="font-size:.75rem;color:var(--text-muted)">Wallet / UPI</div>
+            </div>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="payment_method" value="Credit / Debit Card" />
+            <div>
+              <strong>Debit / Credit Card</strong>
+              <div style="font-size:.75rem;color:var(--text-muted)">Visa / Mastercard / RuPay</div>
+            </div>
+          </label>
+        </div>
 
-        <script>
-          const price = {{ showtime.price }};
-          const seatsInput = document.getElementById('id_seats');
-          const totalCostEl = document.getElementById('totalCost');
-          if (seatsInput && totalCostEl) {
-            seatsInput.addEventListener('input', () => {
-              const count = parseInt(seatsInput.value) || 1;
-              totalCostEl.textContent = '₹' + (count * price).toFixed(0);
-            });
-          }
-        </script>
-        {% else %}
-        <div class="alert alert-info" style="text-align:center;padding:1.5rem">
-          <p style="margin-bottom:.8rem">Please log in to your CineTix account to complete your booking.</p>
-          <a href="/admin/login/?next={{ request.path }}" class="btn btn-primary btn-sm">Login with Account</a>
-        </div>
-        {% endif %}
+        <button type="submit" id="payBtn" class="btn btn-primary" style="width:100%;font-size:1.1rem;padding:.85rem;cursor:not-allowed;opacity:0.5" disabled>
+          🔒 Select Seats to Proceed
+        </button>
+      </form>
       {% else %}
-        <div class="alert alert-danger" style="text-align:center">
-          This show is completely sold out! Please select another showtime or date.
-        </div>
-        <a href="{% url 'tickets:movie_detail' showtime.movie.pk %}" class="btn btn-secondary" style="width:100%">Choose Another Show</a>
+      <div class="alert alert-info" style="text-align:center;padding:1.5rem">
+        <p style="margin-bottom:.8rem">Please log in to your account to complete seat booking & payment.</p>
+        <a href="/admin/login/?next={{ request.path }}" class="btn btn-primary btn-sm">Login with Account</a>
+      </div>
       {% endif %}
+
     </div>
   </div>
 </div>
+
+<script>
+  const pricePerSeat = {{ showtime.price }};
+  const selectedSeats = new Set();
+  const seatButtons = document.querySelectorAll('.seat-btn:not(.booked)');
+  const selectedSeatsDisplay = document.getElementById('selectedSeatsDisplay');
+  const totalPriceDisplay = document.getElementById('totalPriceDisplay');
+  const seatNumbersInput = document.getElementById('seatNumbersInput');
+  const seatsCountInput = document.getElementById('seatsCountInput');
+  const payBtn = document.getElementById('payBtn');
+
+  seatButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const seat = btn.dataset.seat;
+      if (selectedSeats.has(seat)) {
+        selectedSeats.delete(seat);
+        btn.classList.remove('selected');
+      } else {
+        if (selectedSeats.size >= 10) {
+          alert('You can select a maximum of 10 seats per booking.');
+          return;
+        }
+        selectedSeats.add(seat);
+        btn.classList.add('selected');
+      }
+      updateSummary();
+    });
+  });
+
+  function updateSummary() {
+    const seatsArray = Array.from(selectedSeats).sort();
+    const count = seatsArray.length;
+    const total = count * pricePerSeat;
+
+    if (count > 0) {
+      selectedSeatsDisplay.textContent = seatsArray.join(', ');
+      totalPriceDisplay.textContent = '₹' + total.toFixed(0);
+      seatNumbersInput.value = seatsArray.join(', ');
+      seatsCountInput.value = count;
+      if (payBtn) {
+        payBtn.disabled = false;
+        payBtn.style.opacity = '1';
+        payBtn.style.cursor = 'pointer';
+        payBtn.textContent = `🔒 Pay ₹${total.toFixed(0)} & Book ${count} Ticket(s)`;
+      }
+    } else {
+      selectedSeatsDisplay.textContent = 'None selected';
+      totalPriceDisplay.textContent = '₹0';
+      seatNumbersInput.value = '';
+      seatsCountInput.value = '0';
+      if (payBtn) {
+        payBtn.disabled = true;
+        payBtn.style.opacity = '0.5';
+        payBtn.style.cursor = 'not-allowed';
+        payBtn.textContent = '🔒 Select Seats to Proceed';
+      }
+    }
+  }
+
+  // Pre-select 2 nice center seats by default for quick checkout!
+  const defaultSeat = document.querySelector('.seat-btn[data-seat="C5"]:not(.booked)') || document.querySelector('.seat-btn[data-seat="D5"]:not(.booked)');
+  if (defaultSeat) {
+    defaultSeat.click();
+  }
+</script>
 {% endblock %}
