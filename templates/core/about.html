@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}About Us{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>About TicketSite</h1>
+    <p>Your trusted platform for event ticketing since 2024.</p>
+  </div>
+</div>
+<div class="container">
+  <div style="max-width:720px;margin:0 auto">
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-body">
+        <h2 style="font-size:1.4rem;margin-bottom:1rem">Our Mission</h2>
+        <p style="color:var(--text-muted);line-height:1.8">
+          TicketSite is a modern, secure event-ticket booking platform built as a final assessment 
+          project for the Software Development programme. We set out to prove that great software 
+          engineering — clean code, solid databases, real AI integration, and a thoughtful UX — 
+          can be delivered at speed without cutting corners.
+        </p>
+      </div>
+    </div>
+    <div class="grid grid-2" style="margin-bottom:1.5rem">
+      {% for icon,stat,label in stats %}
+      <div class="card"><div class="card-body" style="text-align:center">
+        <div style="font-size:2rem">{{ icon }}</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--primary)">{{ stat }}</div>
+        <div style="color:var(--text-muted);font-size:.9rem">{{ label }}</div>
+      </div></div>
+      {% endfor %}
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h2 style="font-size:1.4rem;margin-bottom:1rem">Technology Stack</h2>
+        <div class="grid grid-2">
+          {% for layer, tech in stack %}
+          <div>
+            <span class="badge badge-primary">{{ layer }}</span>
+            <p style="margin-top:.4rem;color:var(--text-muted);font-size:.9rem">{{ tech }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

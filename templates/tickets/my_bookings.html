@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}My Movie Bookings{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>🎟️ My Bookings</h1>
+    <p>View, manage, and access your Tamil movie tickets.</p>
+  </div>
+</div>
+
+<div class="container">
+  {% if bookings %}
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Poster</th>
+          <th>Reference</th>
+          <th>Movie</th>
+          <th>Theater</th>
+          <th>Date & Time</th>
+          <th>Seats</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in bookings %}
+        <tr>
+          <td style="width:60px;padding:.5rem">
+            <div style="width:50px;height:70px;border-radius:6px;overflow:hidden;background:#000">
+              {% if booking.showtime.movie.poster_image %}
+                <img src="{% static booking.showtime.movie.poster_static_path %}" alt="{{ booking.showtime.movie.title }}"
+                     style="width:100%;height:100%;object-fit:cover" />
+              {% else %}
+                <div style="height:100%;display:flex;align-items:center;justify-content:center">🎬</div>
+              {% endif %}
+            </div>
+          </td>
+          <td><code style="color:var(--primary);font-weight:700">{{ booking.booking_ref }}</code></td>
+          <td>
+            <strong>{{ booking.showtime.movie.title }}</strong>
+            {% if booking.showtime.movie.title_tamil %}<br><small style="color:var(--text-muted)">{{ booking.showtime.movie.title_tamil }}</small>{% endif %}
+          </td>
+          <td style="color:var(--text-muted);font-size:.88rem">{{ booking.showtime.theater.name }}</td>
+          <td style="color:var(--text-muted);font-size:.88rem">{{ booking.showtime.show_date|date:"d M Y" }}<br>{{ booking.showtime.show_time|time:"h:i A" }}</td>
+          <td>{{ booking.seats }}</td>
+          <td><strong>₹{{ booking.total_price|floatformat:0 }}</strong></td>
+          <td>
+            <span class="badge {% if booking.status == 'confirmed' %}badge-success{% elif booking.status == 'cancelled' %}badge-danger{% else %}badge-warning{% endif %}">
+              {{ booking.get_status_display }}
+            </span>
+          </td>
+          <td>
+            <a href="{% url 'tickets:booking_detail' booking.booking_ref %}" class="btn btn-sm btn-secondary">Ticket</a>
+            {% if booking.status == 'confirmed' %}
+            <a href="{% url 'tickets:cancel_booking' booking.booking_ref %}" class="btn btn-sm btn-danger" style="margin-left:.25rem">Cancel</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:4rem">
+    <div style="font-size:4rem;margin-bottom:1rem">🎬</div>
+    <h2 style="margin-bottom:.5rem">No movie tickets booked yet</h2>
+    <p style="color:var(--text-muted);margin-bottom:1.5rem">Check out the latest Tamil releases in Chennai and book your tickets!</p>
+    <a href="{% url 'tickets:movie_list' %}" class="btn btn-primary">Browse Now Showing</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home – Tamil Movie Ticket Booking{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    {% if weather %}
+    <div style="margin-bottom:1.5rem">
+      <div class="weather-widget">
+        <span>🌤️</span>
+        <span><strong>{{ weather.city }}</strong>
+          {% if weather.temp != '--' %}{{ weather.temp }}°C – {% endif %}{{ weather.description }}
+          {% if weather.source == 'fallback' %}<span style="font-size:.78rem;color:var(--text-muted)">(offline)</span>{% endif %}
+        </span>
+      </div>
+    </div>
+    {% endif %}
+    <h1>Book <span>Tamil Movie</span> Tickets Online</h1>
+    <p>Original Kollywood Blockbusters • Chennai Theaters • Instant Confirmation • Best FDFS Experience</p>
+    <div class="hero-actions">
+      <a href="{% url 'tickets:movie_list' %}" class="btn btn-primary">🎬 Browse Now Showing</a>
+      <a href="{% url 'faqs:faq_list' %}" class="btn btn-secondary">❓ FAQ & Help</a>
+    </div>
+  </div>
+</section>
+
+<!-- Now Showing Grid with Original Posters -->
+<section class="section" style="background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h2 class="section-title" style="margin:0">🔥 Now Showing in Chennai</h2>
+        <p class="section-subtitle" style="margin:0">Original Tamil movies running across top Chennai screens.</p>
+      </div>
+      <a href="{% url 'tickets:movie_list' %}" class="btn btn-secondary btn-sm">View All Movies &rarr;</a>
+    </div>
+
+    <div class="grid grid-3">
+      {% for movie in latest_movies %}
+      <div class="card" style="display:flex;flex-direction:column">
+        <div style="position:relative;height:320px;overflow:hidden;background:#000">
+          {% if movie.poster_image %}
+            <img src="{% static movie.poster_static_path %}" alt="{{ movie.title }}"
+                 style="width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .3s" />
+          {% else %}
+            <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem">🎬</div>
+          {% endif %}
+          <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);padding:4px 10px;border-radius:6px;font-size:.78rem;font-weight:700;color:#fff">
+            {{ movie.certificate }}
+          </div>
+          <div style="position:absolute;bottom:10px;left:10px;background:rgba(99,102,241,0.9);padding:3px 8px;border-radius:4px;font-size:.75rem;font-weight:700;color:#fff">
+            {{ movie.get_genre_display }}
+          </div>
+        </div>
+
+        <div class="card-body" style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <h3 class="card-title" style="font-size:1.2rem;margin-bottom:.2rem">{{ movie.title }}</h3>
+            {% if movie.title_tamil %}
+              <p style="color:var(--primary);font-size:1rem;font-weight:600;margin-bottom:.5rem">{{ movie.title_tamil }}</p>
+            {% endif %}
+            <p class="card-text" style="font-size:.85rem;margin-bottom:.3rem">
+              🎬 <strong>Director:</strong> {{ movie.director }}
+            </p>
+            <p class="card-text" style="font-size:.82rem;color:var(--text-muted);margin-bottom:.5rem">
+              ⭐ {{ movie.cast|truncatewords:6 }}
+            </p>
+            <p class="card-text" style="font-size:.82rem">
+              ⏱️ {{ movie.duration_display }}
+            </p>
+          </div>
+
+          <div style="margin-top:1.2rem">
+            <a href="{% url 'tickets:movie_detail' movie.pk %}" class="btn btn-primary btn-sm" style="width:100%;padding:.6rem">
+              🎟️ Book Tickets
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title" style="text-align:center">Why Book on CineTix?</h2>
+    <p class="section-subtitle" style="text-align:center">The easiest way to book Tamil movie tickets in Chennai.</p>
+    <div class="grid grid-3">
+      {% for icon, title, desc in features %}
+      <div class="card">
+        <div class="card-body" style="text-align:center">
+          <div style="font-size:2.5rem;margin-bottom:1rem">{{ icon }}</div>
+          <h3 class="card-title">{{ title }}</h3>
+          <p class="card-text">{{ desc }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CineBot CTA -->
+<section class="section" style="background:var(--bg-card);border-top:1px solid var(--border)">
+  <div class="container" style="text-align:center">
+    <div style="font-size:3rem;margin-bottom:1rem">🤖</div>
+    <h2 class="section-title">Got Questions? Ask CineBot</h2>
+    <p class="section-subtitle" style="max-width:520px;margin:0 auto 1.5rem">
+      CineBot answers questions about Vijay, Rajini, Ajith releases, theater showtimes, error codes, and ticket booking support.
+    </p>
+    <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-primary">
+      💬 Chat with CineBot
+    </button>
+  </div>
+</section>
+{% endblock %}

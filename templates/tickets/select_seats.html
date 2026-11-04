@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Select Seats – {{ showtime.movie.title }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:750px;margin:0 auto;padding-top:2rem">
+  <a href="{% url 'tickets:movie_detail' showtime.movie.pk %}" style="color:var(--text-muted);font-size:.9rem">&larr; Back to Showtimes</a>
+
+  <div class="card" style="margin-top:1.5rem">
+    <div class="card-body">
+      <!-- Movie & Showtime Info Bar -->
+      <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)">
+        <div style="flex:0 0 90px;height:120px;overflow:hidden;border-radius:8px;background:#000">
+          {% if showtime.movie.poster_image %}
+            <img src="{% static showtime.movie.poster_static_path %}" alt="{{ showtime.movie.title }}"
+                 style="width:100%;height:100%;object-fit:cover" />
+          {% else %}
+            <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem">🎬</div>
+          {% endif %}
+        </div>
+        <div>
+          <h1 style="font-size:1.6rem;font-weight:800;margin:0">{{ showtime.movie.title }}</h1>
+          {% if showtime.movie.title_tamil %}
+            <p style="color:var(--primary);font-size:.95rem;font-weight:600;margin:.2rem 0">{{ showtime.movie.title_tamil }}</p>
+          {% endif %}
+          <p style="color:var(--text-muted);font-size:.88rem;margin:0">
+            🏛️ <strong>{{ showtime.theater.name }}</strong>, {{ showtime.theater.location }}
+          </p>
+          <p style="color:var(--text-muted);font-size:.85rem;margin-top:.2rem">
+            📅 {{ showtime.show_date|date:"l, d M Y" }} • ⏰ {{ showtime.show_time|time:"h:i A" }}
+          </p>
+        </div>
+      </div>
+
+      <div style="background:var(--bg-card2);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <span style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase">Ticket Price</span>
+          <p style="font-size:1.4rem;font-weight:700;color:var(--primary);margin:0">₹{{ showtime.price|floatformat:0 }} <span style="font-size:.8rem;color:var(--text-muted)">/ seat</span></p>
+        </div>
+        <div style="text-align:right">
+          <span style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase">Availability</span>
+          <p style="font-size:1rem;font-weight:700;margin:0">
+            {% if showtime.is_sold_out %}
+              <span class="badge badge-danger">Sold Out</span>
+            {% elif showtime.is_filling_fast %}
+              <span class="badge badge-warning">⚡ {{ showtime.available_seats }} seats left</span>
+            {% else %}
+              <span class="badge badge-success">{{ showtime.available_seats }} available</span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+      <!-- Cinema Screen UI Graphic -->
+      <div style="text-align:center;margin:2rem 0 2.5rem">
+        <div style="height:6px;width:75%;background:linear-gradient(90deg, transparent, var(--primary), transparent);margin:0 auto;border-radius:4px;box-shadow:0 0 16px var(--primary)"></div>
+        <p style="font-size:.75rem;letter-spacing:.2em;color:var(--text-muted);text-transform:uppercase;margin-top:.6rem">All Eyes This Way • Cinema Screen</p>
+      </div>
+
+      {% if not showtime.is_sold_out %}
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'tickets:book_showtime' showtime.pk %}" id="bookingForm">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="id_seats" style="font-weight:600">Select Number of Tickets (Max 10 per booking)</label>
+            <div style="display:flex;align-items:center;gap:1.5rem;margin-top:.4rem">
+              {{ form.seats }}
+              <div style="font-size:1.1rem;color:var(--text-muted)">
+                Total Amount: <strong id="totalCost" style="color:var(--success);font-size:1.3rem">₹{{ showtime.price|floatformat:0 }}</strong>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;font-size:1.05rem;padding:.85rem;margin-top:1rem">
+            🎟️ Proceed to Pay & Confirm Tickets
+          </button>
+        </form>
+
+        <script>
+          const price = {{ showtime.price }};
+          const seatsInput = document.getElementById('id_seats');
+          const totalCostEl = document.getElementById('totalCost');
+          if (seatsInput && totalCostEl) {
+            seatsInput.addEventListener('input', () => {
+              const count = parseInt(seatsInput.value) || 1;
+              totalCostEl.textContent = '₹' + (count * price).toFixed(0);
+            });
+          }
+        </script>
+        {% else %}
+        <div class="alert alert-info" style="text-align:center;padding:1.5rem">
+          <p style="margin-bottom:.8rem">Please log in to your CineTix account to complete your booking.</p>
+          <a href="/admin/login/?next={{ request.path }}" class="btn btn-primary btn-sm">Login with Account</a>
+        </div>
+        {% endif %}
+      {% else %}
+        <div class="alert alert-danger" style="text-align:center">
+          This show is completely sold out! Please select another showtime or date.
+        </div>
+        <a href="{% url 'tickets:movie_detail' showtime.movie.pk %}" class="btn btn-secondary" style="width:100%">Choose Another Show</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Now Showing – Tamil Movies in Chennai{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>🎬 Now Showing in Chennai</h1>
+    <p>Browse current Tamil releases with original posters, cast info, and real-time showtimes.</p>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Genre filters -->
+  <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:2rem">
+    <a href="{% url 'tickets:movie_list' %}" class="btn btn-sm {% if not selected_genre %}btn-primary{% else %}btn-secondary{% endif %}">All Genres</a>
+    {% for val, label in genres %}
+    <a href="?genre={{ val }}" class="btn btn-sm {% if selected_genre == val %}btn-primary{% else %}btn-secondary{% endif %}">{{ label }}</a>
+    {% endfor %}
+  </div>
+
+  <div class="grid grid-3">
+    {% for movie in movies %}
+    <div class="card" style="display:flex;flex-direction:column">
+      <div style="position:relative;height:350px;overflow:hidden;background:#000">
+        {% if movie.poster_image %}
+          <img src="{% static movie.poster_static_path %}" alt="{{ movie.title }} Poster"
+               style="width:100%;height:100%;object-fit:cover;object-position:center top" />
+        {% else %}
+          <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem">🎬</div>
+        {% endif %}
+        <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);padding:4px 10px;border-radius:6px;font-size:.78rem;font-weight:700;color:#fff">
+          {{ movie.certificate }}
+        </div>
+        <div style="position:absolute;bottom:10px;left:10px;background:rgba(99,102,241,0.95);padding:3px 8px;border-radius:4px;font-size:.75rem;font-weight:700;color:#fff">
+          {{ movie.get_genre_display }}
+        </div>
+      </div>
+
+      <div class="card-body" style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <h3 class="card-title" style="font-size:1.25rem;margin-bottom:.2rem">{{ movie.title }}</h3>
+          {% if movie.title_tamil %}
+            <p style="color:var(--primary);font-size:1rem;font-weight:600;margin-bottom:.5rem">{{ movie.title_tamil }}</p>
+          {% endif %}
+          <p class="card-text" style="font-size:.85rem;margin-bottom:.3rem">
+            🎬 <strong>Director:</strong> {{ movie.director }}
+          </p>
+          <p class="card-text" style="font-size:.82rem;color:var(--text-muted);margin-bottom:.5rem">
+            ⭐ <strong>Cast:</strong> {{ movie.cast }}
+          </p>
+          <p class="card-text" style="font-size:.82rem">
+            ⏱️ {{ movie.duration_display }} • 📅 {{ movie.release_date|date:"d M Y" }}
+          </p>
+        </div>
+
+        <div style="margin-top:1.2rem">
+          <a href="{% url 'tickets:movie_detail' movie.pk %}" class="btn btn-primary btn-sm" style="width:100%;padding:.65rem">
+            🎟️ Select Theaters & Shows
+          </a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div style="grid-column:1/-1;text-align:center;padding:4rem">
+      <p style="color:var(--text-muted);font-size:1.1rem">No movies found in this genre.</p>
+      <a href="{% url 'tickets:movie_list' %}" class="btn btn-secondary" style="margin-top:1rem">Show All Movies</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

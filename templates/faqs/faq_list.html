@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Frequently Asked Questions{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Frequently Asked Questions</h1>
+    <p>Everything you need to know about booking on TicketSite.</p>
+  </div>
+</div>
+<div class="container" style="max-width:800px;margin:0 auto">
+
+  {% for category, faqs in grouped.items %}
+  <div class="faq-category">
+    <h2 class="faq-category-title">{{ category }}</h2>
+    {% for faq in faqs %}
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        {{ faq.question }}
+        <span class="icon">▼</span>
+      </button>
+      <div class="faq-answer">{{ faq.answer }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% empty %}
+  <div style="text-align:center;padding:3rem">
+    <p style="color:var(--text-muted)">No FAQs available yet. Check back soon!</p>
+  </div>
+  {% endfor %}
+
+  <!-- Ask the assistant CTA -->
+  <div class="card" style="margin-top:2rem">
+    <div class="card-body" style="text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:.75rem">🤖</div>
+      <h3 style="margin-bottom:.5rem">Can't find your answer?</h3>
+      <p style="color:var(--text-muted);margin-bottom:1rem">
+        Ask TicketBot — our AI assistant can answer questions, explain error codes,
+        and raise a support ticket if needed.
+      </p>
+      <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-primary">
+        Ask the Assistant
+      </button>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+

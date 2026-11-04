@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Browse Events{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Browse Events</h1>
+    <p>Find your next experience from our curated lineup.</p>
+  </div>
+</div>
+<div class="container">
+  <!-- Category filter -->
+  <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:2rem">
+    <a href="{% url 'tickets:event_list' %}"
+       class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn-secondary{% endif %}">All</a>
+    {% for val, label in categories %}
+    <a href="?category={{ val }}"
+       class="btn btn-sm {% if selected_category == val %}btn-primary{% else %}btn-secondary{% endif %}">{{ label }}</a>
+    {% endfor %}
+  </div>
+
+  <div class="grid grid-3">
+    {% for event in events %}
+    <div class="card">
+      <div class="card-img" style="height:160px;display:flex;align-items:center;justify-content:center">
+        <span style="font-size:3.5rem">
+          {% if event.category == 'concert' %}🎵
+          {% elif event.category == 'sports' %}⚽
+          {% elif event.category == 'theatre' %}🎭
+          {% elif event.category == 'conference' %}💼
+          {% else %}🎪{% endif %}
+        </span>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
+          <span class="badge badge-primary">{{ event.get_category_display }}</span>
+          {% if event.is_sold_out %}
+            <span class="badge badge-danger">Sold Out</span>
+          {% elif event.available_seats < 20 %}
+            <span class="badge badge-warning">{{ event.available_seats }} left!</span>
+          {% else %}
+            <span class="badge badge-success">{{ event.available_seats }} seats</span>
+          {% endif %}
+        </div>
+        <h3 class="card-title">{{ event.title }}</h3>
+        <p class="card-text" style="margin-bottom:.4rem">📅 {{ event.date|date:"d M Y, H:i" }}</p>
+        <p class="card-text">📍 {{ event.venue }}</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.1rem">
+          <strong style="font-size:1.1rem">£{{ event.price }}</strong>
+          <a href="{% url 'tickets:event_detail' event.pk %}" class="btn btn-primary btn-sm">View Details</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div style="grid-column:1/-1;text-align:center;padding:3rem">
+      <p style="color:var(--text-muted)">No events found for this category.</p>
+      <a href="{% url 'tickets:event_list' %}" class="btn btn-secondary" style="margin-top:1rem">Clear Filter</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Cancel Ticket Booking{% endblock %}
+{% block content %}
+<div class="container" style="max-width:520px;margin:0 auto;padding-top:2rem">
+  <div class="card">
+    <div class="card-body" style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:1rem">⚠️</div>
+      <h1 style="font-size:1.5rem;margin-bottom:.5rem">Cancel Ticket Booking?</h1>
+      <p style="color:var(--text-muted);margin-bottom:1.5rem">
+        Are you sure you want to cancel booking <strong style="color:var(--primary)">{{ booking.booking_ref }}</strong>
+        for <strong>{{ booking.showtime.movie.title }}</strong> at <strong>{{ booking.showtime.theater.name }}</strong>?
+        <br><br>
+        A refund of <strong style="color:var(--success)">₹{{ booking.total_price|floatformat:0 }}</strong> will be credited to your original payment method in 3-5 business days.
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        <div style="display:flex;gap:1rem;justify-content:center">
+          <a href="{% url 'tickets:my_bookings' %}" class="btn btn-secondary">Keep Tickets</a>
+          <button type="submit" class="btn btn-danger">Yes, Cancel Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

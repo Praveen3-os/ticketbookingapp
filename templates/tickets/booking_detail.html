@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Booking Confirmed – {{ booking.booking_ref }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:620px;margin:0 auto;padding-top:2rem">
+  <div class="card booking-card">
+    <div class="card-body">
+      <div style="text-align:center;margin-bottom:2rem">
+        <div style="font-size:3.5rem;margin-bottom:.5rem">🎉</div>
+        <h1 style="font-size:1.7rem;font-weight:800">Movie Ticket Confirmed!</h1>
+        <p style="color:var(--text-muted);font-size:.9rem;margin-top:.3rem">
+          Show this e-ticket on your mobile at the cinema gate.
+        </p>
+      </div>
+
+      <div style="background:var(--bg-card2);border-radius:12px;padding:1.4rem;margin-bottom:1.5rem">
+        <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border)">
+          <div style="flex:0 0 80px;height:110px;overflow:hidden;border-radius:8px;background:#000">
+            {% if booking.showtime.movie.poster_image %}
+              <img src="{% static booking.showtime.movie.poster_static_path %}" alt="{{ booking.showtime.movie.title }}"
+                   style="width:100%;height:100%;object-fit:cover" />
+            {% else %}
+              <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem">🎬</div>
+            {% endif %}
+          </div>
+          <div>
+            <h2 style="font-size:1.35rem;font-weight:800;margin:0">{{ booking.showtime.movie.title }}</h2>
+            {% if booking.showtime.movie.title_tamil %}
+              <p style="color:var(--primary);font-size:.95rem;font-weight:600;margin:.2rem 0">{{ booking.showtime.movie.title_tamil }}</p>
+            {% endif %}
+            <span class="badge badge-primary">{{ booking.showtime.movie.certificate }}</span>
+            <span class="badge badge-muted">{{ booking.showtime.movie.get_genre_display }}</span>
+          </div>
+        </div>
+
+        <div class="booking-row">
+          <span class="booking-label">Booking Reference</span>
+          <span class="booking-value" style="color:var(--primary);font-size:1.1rem;font-weight:800">{{ booking.booking_ref }}</span>
+        </div>
+        <div class="booking-row">
+          <span class="booking-label">Cinema Theater</span>
+          <span class="booking-value">{{ booking.showtime.theater.name }}, {{ booking.showtime.theater.location }}</span>
+        </div>
+        <div class="booking-row">
+          <span class="booking-label">Show Date & Time</span>
+          <span class="booking-value">{{ booking.showtime.show_date|date:"l, d M Y" }} at {{ booking.showtime.show_time|time:"h:i A" }}</span>
+        </div>
+        <div class="booking-row">
+          <span class="booking-label">Seats Reserved</span>
+          <span class="booking-value">{{ booking.seats }} Ticket(s)</span>
+        </div>
+        <div class="booking-row">
+          <span class="booking-label">Booking Status</span>
+          <span class="badge {% if booking.status == 'confirmed' %}badge-success{% elif booking.status == 'cancelled' %}badge-danger{% else %}badge-warning{% endif %}">
+            {{ booking.get_status_display }}
+          </span>
+        </div>
+        <div class="booking-row">
+          <span class="booking-label">Total Amount Paid</span>
+          <span class="booking-value" style="font-size:1.25rem;color:var(--success)">₹{{ booking.total_price|floatformat:0 }}</span>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap">
+        <a href="{% url 'tickets:my_bookings' %}" class="btn btn-secondary" style="flex:1">View My Bookings</a>
+        <a href="{% url 'tickets:movie_list' %}" class="btn btn-primary" style="flex:1">Book More Movies</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

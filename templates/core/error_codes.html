@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Error Codes{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Error Code Reference</h1>
+    <p>Understand every error you might encounter on TicketSite.</p>
+  </div>
+</div>
+<div class="container">
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for code in codes %}
+        <tr>
+          <td><code style="color:var(--primary);font-weight:700">{{ code.code }}</code></td>
+          <td><strong>{{ code.title }}</strong></td>
+          <td style="color:var(--text-muted)">{{ code.description }}</td>
+          <td>
+            {% if code.is_site_specific %}
+              <span class="badge badge-warning">Site-Specific</span>
+            {% else %}
+              <span class="badge badge-muted">HTTP Standard</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" style="text-align:center;color:var(--text-muted)">No error codes loaded yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card" style="margin-top:2rem">
+    <div class="card-body" style="text-align:center">
+      <p style="color:var(--text-muted)">Not sure what an error means? Ask TicketBot!</p>
+      <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-primary" style="margin-top:.75rem">
+        Ask the Assistant
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

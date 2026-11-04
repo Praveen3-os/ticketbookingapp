@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }}{% endblock %}
+{% block content %}
+<div class="container" style="max-width:800px;margin:0 auto;padding-top:2rem">
+  <a href="{% url 'tickets:event_list' %}" style="color:var(--text-muted);font-size:.9rem">&larr; Back to Events</a>
+
+  <div class="card" style="margin-top:1.5rem">
+    <div style="height:220px;background:var(--bg-card2);display:flex;align-items:center;justify-content:center;font-size:5rem">
+      {% if event.category == 'concert' %}🎵
+      {% elif event.category == 'sports' %}⚽
+      {% elif event.category == 'theatre' %}🎭
+      {% elif event.category == 'conference' %}💼
+      {% else %}🎪{% endif %}
+    </div>
+    <div class="card-body">
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
+        <span class="badge badge-primary">{{ event.get_category_display }}</span>
+        {% if event.is_sold_out %}
+          <span class="badge badge-danger">Sold Out</span>
+        {% elif event.available_seats < 20 %}
+          <span class="badge badge-warning">Only {{ event.available_seats }} seat(s) left!</span>
+        {% else %}
+          <span class="badge badge-success">{{ event.available_seats }} seats available</span>
+        {% endif %}
+      </div>
+
+      <h1 style="font-size:1.8rem;font-weight:800;margin-bottom:1rem">{{ event.title }}</h1>
+
+      <div class="grid grid-2" style="margin-bottom:1.5rem">
+        <div>
+          <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:.3rem">DATE & TIME</p>
+          <p><strong>{{ event.date|date:"l, d F Y" }}</strong> at {{ event.date|time:"H:i" }}</p>
+        </div>
+        <div>
+          <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:.3rem">VENUE</p>
+          <p><strong>{{ event.venue }}</strong></p>
+        </div>
+        <div>
+          <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:.3rem">PRICE PER SEAT</p>
+          <p><strong style="font-size:1.3rem;color:var(--primary)">£{{ event.price }}</strong></p>
+        </div>
+        <div>
+          <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:.3rem">CAPACITY</p>
+          <p><strong>{{ event.total_seats }} total</strong></p>
+        </div>
+      </div>
+
+      <p style="color:var(--text-muted);line-height:1.8;margin-bottom:2rem">{{ event.description }}</p>
+
+      {% if not event.is_sold_out %}
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'tickets:book_event' event.pk %}">
+          {% csrf_token %}
+          <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+            <div class="form-group" style="margin-bottom:0">
+              <label for="id_seats">Number of Seats</label>
+              {{ form.seats }}
+            </div>
+            <div style="padding-top:1.4rem">
+              <button type="submit" class="btn btn-primary">🎟️ Book Now</button>
+            </div>
+          </div>
+          <p style="color:var(--text-muted);font-size:.82rem;margin-top:.75rem">
+            Total will be calculated at checkout. Max 10 seats per booking.
+          </p>
+        </form>
+        {% else %}
+        <div class="alert alert-info">
+          Please <a href="/admin/login/?next={{ request.path }}">log in</a> to book tickets.
+        </div>
+        {% endif %}
+      {% else %}
+        <div class="alert alert-danger">This event is sold out. Check back for cancellations.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+

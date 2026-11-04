@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Submit a Support Ticket{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Submit a Support Ticket</h1>
+    <p>Can't find an answer? Our team will respond within 1 business day.</p>
+  </div>
+</div>
+<div class="container" style="max-width:600px;margin:0 auto">
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            {% for error in field.errors %}
+              <p style="color:var(--danger);font-size:.82rem;margin-top:.3rem">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" style="width:100%">Submit Ticket</button>
+      </form>
+      <p style="color:var(--text-muted);font-size:.85rem;margin-top:1.2rem;text-align:center">
+        💡 You can also try asking <strong>TicketBot</strong> (bottom-right) for instant answers!
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
