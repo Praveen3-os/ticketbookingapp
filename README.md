@@ -1,7 +1,7 @@
 # CineTix 🎬 – Tamil Movie Ticket Booking Platform
 
 > **Live Website:** [http://127.0.0.1:8000](http://127.0.0.1:8000)  
-> **GitHub Repository:** `https://github.com/yourusername/cinetix-tamil-movies`
+> **GitHub Repository:** `https://github.com/Praveen3-os/ticketbookingapp`
 
 A full-stack Django movie ticket booking platform for original **Tamil cinema (Kollywood)** in Chennai, built as a **Software Development Final Assessment** submission. It includes an integrated AI assistant (**CineBot**), SQL-backed bookings & support tickets, MongoDB chat logging, Chennai weather integration, custom error pages, and request logging.
 
