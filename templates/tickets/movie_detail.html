@@ -1,83 +1,103 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}{{ movie.title }} – Tamil Movie Tickets{% endblock %}
+{% block title %}{{ movie.title }} – Tamil Movie Tickets & Showtimes{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width:960px;margin:0 auto;padding-top:2rem">
-  <a href="{% url 'tickets:movie_list' %}" style="color:var(--text-muted);font-size:.9rem">&larr; Back to Now Showing</a>
+<div class="container" style="max-width:980px;margin:0 auto;padding-top:2rem">
+  <a href="{% url 'tickets:movie_list' %}" style="color:var(--text-muted);font-size:.9rem;font-weight:600">&larr; Back to Now Showing</a>
 
   <!-- Movie Detail Header Card -->
-  <div class="card" style="margin-top:1.5rem;overflow:hidden">
+  <div class="card" style="margin-top:1.5rem;overflow:hidden;border:1px solid rgba(248,68,100,0.3)">
     <div style="display:flex;flex-wrap:wrap">
-      <div style="flex:0 0 240px;height:340px;overflow:hidden;background:#000">
+      <div style="flex:0 0 260px;height:380px;overflow:hidden;background:#000;position:relative">
         {% if movie.poster_image %}
           <img src="{% static movie.poster_static_path %}" alt="{{ movie.title }}"
                style="width:100%;height:100%;object-fit:cover;object-position:center top" />
         {% else %}
           <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem">🎬</div>
         {% endif %}
+        <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.85);border:1px solid #ff3b56;color:#ff3b56;padding:3px 8px;border-radius:4px;font-size:.72rem;font-weight:900">
+          4K UHD
+        </div>
       </div>
 
-      <div class="card-body" style="flex:1;min-width:300px;display:flex;flex-direction:column;justify-content:center">
-        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem">
-          <span class="badge badge-primary">{{ movie.get_genre_display }}</span>
+      <div class="card-body" style="flex:1;min-width:320px;display:flex;flex-direction:column;justify-content:center;padding:2rem">
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem">
+          <span class="badge badge-primary">{{ movie.get_genre_display|upper }}</span>
           <span class="badge badge-muted">{{ movie.certificate }}</span>
-          <span class="badge badge-muted">{{ movie.get_language_display }}</span>
+          <span class="badge badge-muted">TAMIL (ORIGINAL)</span>
           <span class="badge badge-muted">{{ movie.duration_display }}</span>
         </div>
 
-        <h1 style="font-size:2rem;font-weight:800;margin-bottom:.2rem">{{ movie.title }}</h1>
+        <h1 style="font-size:2.3rem;font-weight:900;margin-bottom:.2rem;color:#fff;letter-spacing:-0.5px">
+          {{ movie.title }}
+        </h1>
         {% if movie.title_tamil %}
-          <p style="color:var(--primary);font-size:1.2rem;font-weight:600;margin-bottom:.8rem">{{ movie.title_tamil }}</p>
+          <p style="color:var(--text-red);font-size:1.35rem;font-weight:800;margin-bottom:1rem">
+            {{ movie.title_tamil }}
+          </p>
         {% endif %}
 
-        <p style="color:var(--text-muted);font-size:.92rem;line-height:1.7;margin-bottom:1.2rem">{{ movie.description }}</p>
+        <p style="color:#d4d4d8;font-size:.95rem;line-height:1.7;margin-bottom:1.5rem">
+          {{ movie.description }}
+        </p>
 
-        <div class="grid grid-2" style="gap:.8rem;font-size:.88rem">
-          <div><span style="color:var(--text-muted);font-size:.78rem;text-transform:uppercase">Director</span><br><strong>{{ movie.director }}</strong></div>
-          <div><span style="color:var(--text-muted);font-size:.78rem;text-transform:uppercase">Release Date</span><br><strong>{{ movie.release_date|date:"d M Y" }}</strong></div>
-          <div style="grid-column:1/-1"><span style="color:var(--text-muted);font-size:.78rem;text-transform:uppercase">Starring</span><br><strong>{{ movie.cast }}</strong></div>
+        <div class="grid grid-2" style="gap:1rem;font-size:.9rem;background:#181822;padding:1rem 1.25rem;border-radius:10px;border:1px solid var(--border)">
+          <div>
+            <span style="color:var(--text-muted);font-size:.75rem;text-transform:uppercase;font-weight:700">DIRECTOR</span><br>
+            <strong style="color:#fff">{{ movie.director }}</strong>
+          </div>
+          <div>
+            <span style="color:var(--text-muted);font-size:.75rem;text-transform:uppercase;font-weight:700">RELEASE DATE</span><br>
+            <strong style="color:#fff">{{ movie.release_date|date:"d M Y" }}</strong>
+          </div>
+          <div style="grid-column:1/-1">
+            <span style="color:var(--text-muted);font-size:.75rem;text-transform:uppercase;font-weight:700">STARRING</span><br>
+            <strong style="color:#d4d4d8">{{ movie.cast }}</strong>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Theater Showtimes Section -->
-  <h2 style="font-size:1.5rem;font-weight:700;margin-top:2.5rem;margin-bottom:1.5rem">
-    🏛️ Chennai Theaters & Showtimes
+  <h2 style="font-size:1.6rem;font-weight:900;margin-top:3rem;margin-bottom:1.5rem;color:#fff;display:flex;align-items:center;gap:.6rem">
+    <span style="color:var(--primary)">●</span> CHENNAI THEATERS & SHOW TIMINGS
   </h2>
 
   {% for show_date, theaters in grouped_shows.items %}
-  <div style="margin-bottom:2rem">
-    <div style="display:inline-block;background:var(--bg-card2);padding:.4rem 1rem;border-radius:8px;font-size:.9rem;font-weight:700;color:var(--primary);margin-bottom:1rem">
+  <div style="margin-bottom:2.2rem">
+    <div style="display:inline-block;background:#181824;border:1px solid var(--border);padding:.4rem 1.1rem;border-radius:8px;font-size:.92rem;font-weight:800;color:var(--primary);margin-bottom:1rem">
       📅 {{ show_date|date:"l, d M Y" }}
     </div>
 
     {% for theater, shows in theaters.items %}
-    <div class="card" style="margin-bottom:.85rem">
-      <div class="card-body" style="padding:1.1rem 1.4rem">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem">
+    <div class="card" style="margin-bottom:1rem">
+      <div class="card-body" style="padding:1.2rem 1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
           <div>
-            <strong style="font-size:1.05rem">{{ theater.name }}</strong>
-            <span style="color:var(--text-muted);font-size:.85rem;margin-left:.5rem">📍 {{ theater.location }}, {{ theater.city }}</span>
+            <strong style="font-size:1.1rem;color:#fff">{{ theater.name }}</strong>
+            <span style="color:var(--text-muted);font-size:.85rem;margin-left:.6rem">📍 {{ theater.location }}, {{ theater.city }}</span>
           </div>
-          <span style="font-size:.8rem;color:var(--text-muted)">{{ theater.total_seats }} Seats Screen</span>
+          <span style="font-size:.8rem;color:var(--primary);font-weight:700;border:1px solid rgba(248,68,100,0.3);padding:2px 8px;border-radius:4px">
+            4K Laser & Atmos
+          </span>
         </div>
 
-        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+        <div style="display:flex;gap:.85rem;flex-wrap:wrap">
           {% for show in shows %}
           <a href="{% url 'tickets:select_seats' show.pk %}"
              class="btn btn-sm {% if show.is_sold_out %}btn-secondary{% elif show.is_filling_fast %}btn-danger{% else %}btn-secondary{% endif %}"
-             style="min-width:110px;text-align:center;padding:.5rem .75rem;{% if show.is_sold_out %}opacity:.5;pointer-events:none;{% endif %}">
-            <span style="font-weight:700;font-size:.95rem">{{ show.show_time|time:"h:i A" }}</span>
+             style="min-width:120px;text-align:center;padding:.6rem .85rem;{% if show.is_sold_out %}opacity:.4;pointer-events:none;{% endif %}">
+            <span style="font-weight:800;font-size:1rem">{{ show.show_time|time:"h:i A" }}</span>
             {% if show.is_sold_out %}
               <span style="display:block;font-size:.72rem;color:var(--danger)">SOLD OUT</span>
             {% elif show.is_filling_fast %}
-              <span style="display:block;font-size:.72rem;color:var(--warning)">⚡ {{ show.available_seats }} seats</span>
+              <span style="display:block;font-size:.72rem;color:var(--warning)">⚡ {{ show.available_seats }} left</span>
             {% else %}
               <span style="display:block;font-size:.72rem;color:var(--success)">Available</span>
             {% endif %}
-            <span style="display:block;font-size:.75rem;color:var(--primary);font-weight:600">₹{{ show.price|floatformat:0 }}</span>
+            <span style="display:block;font-size:.78rem;color:var(--text-red);font-weight:800;margin-top:2px">₹{{ show.price|floatformat:0 }}</span>
           </a>
           {% endfor %}
         </div>

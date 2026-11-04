@@ -4,10 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}CineTix{% endblock %} | Tamil Movie Tickets</title>
-  <meta name="description" content="{% block meta_desc %}Book Tamil movie tickets online — Chennai theaters, latest releases, instant confirmation.{% endblock %}" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+  <title>{% block title %}CineTix{% endblock %} | Tamil Movie Tickets in 4K</title>
+  <meta name="description" content="Book Tamil movie tickets in 4K UHD across Chennai theaters with instant seat selection and UPI payments." />
   <link rel="stylesheet" href="{% static 'css/main.css' %}" />
   {% block extra_css %}{% endblock %}
 </head>
@@ -15,17 +13,19 @@
 
 <nav class="navbar" role="navigation">
   <div class="container">
-    <a href="{% url 'core:home' %}" class="navbar-brand">🎬 Cine<span>Tix</span></a>
+    <a href="{% url 'core:home' %}" class="navbar-brand">
+      <span style="color:#f84464;font-size:1.8rem">🎬</span> CINE<span>TIX</span>
+    </a>
     <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
     <ul class="nav-links" id="nav-links">
       <li><a href="{% url 'core:home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Home</a></li>
-      <li><a href="{% url 'tickets:movie_list' %}" {% if 'tickets' in request.resolver_match.namespace %}class="active"{% endif %}>Now Showing</a></li>
+      <li><a href="{% url 'tickets:movie_list' %}" {% if 'tickets' in request.resolver_match.namespace and request.resolver_match.url_name != 'my_bookings' %}class="active"{% endif %}>Now Showing</a></li>
       <li><a href="{% url 'faqs:faq_list' %}" {% if 'faqs' in request.resolver_match.namespace %}class="active"{% endif %}>FAQ</a></li>
       <li><a href="{% url 'core:error_codes' %}">Error Codes</a></li>
       <li><a href="{% url 'core:about' %}">About</a></li>
       <li><a href="{% url 'core:contact' %}">Contact</a></li>
       {% if user.is_authenticated %}
-        <li><a href="{% url 'tickets:my_bookings' %}">My Bookings</a></li>
+        <li><a href="{% url 'tickets:my_bookings' %}" style="color:var(--text-red);font-weight:700">🎟️ My Bookings</a></li>
         <li><a href="/admin/" class="nav-btn">Admin</a></li>
       {% else %}
         <li><a href="/admin/login/" class="nav-btn">Login</a></li>
@@ -35,7 +35,7 @@
 </nav>
 
 {% if messages %}
-<div class="container" style="margin-top:1rem">
+<div class="container" style="margin-top:1.5rem">
   {% for msg in messages %}
     <div class="alert alert-{% if msg.tags == 'error' %}danger{% else %}{{ msg.tags }}{% endif %}">{{ msg }}</div>
   {% endfor %}
@@ -48,51 +48,56 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-col">
-        <h4>🎬 CineTix</h4>
-        <p style="color:var(--text-muted);font-size:.88rem">Book Tamil movie tickets online for Chennai theaters. Instant confirmation, best prices.</p>
+        <h4 style="font-size:1.3rem;letter-spacing:-0.5px">🎬 CINE<span style="color:#fff">TIX</span></h4>
+        <p style="color:var(--text-muted);font-size:.88rem;line-height:1.7">
+          Chennai's premier platform for 4K Tamil cinema bookings. Instant seat reservations, FDFS releases, and UPI payments.
+        </p>
       </div>
       <div class="footer-col">
-        <h4>Quick Links</h4>
+        <h4>Now Showing</h4>
         <ul>
-          <li><a href="{% url 'tickets:movie_list' %}">Now Showing</a></li>
-          <li><a href="{% url 'faqs:faq_list' %}">FAQ</a></li>
-          <li><a href="{% url 'core:error_codes' %}">Error Codes</a></li>
-          <li><a href="{% url 'core:health' %}">Health Status</a></li>
+          <li><a href="{% url 'tickets:movie_list' %}">All Tamil Movies (4K)</a></li>
+          <li><a href="{% url 'tickets:movie_list' %}?genre=action">Action Blockbusters</a></li>
+          <li><a href="{% url 'tickets:movie_list' %}?genre=drama">Drama & Epics</a></li>
+          <li><a href="{% url 'tickets:movie_list' %}?genre=thriller">Thrillers</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Support</h4>
+        <h4>Help & Support</h4>
         <ul>
-          <li><a href="{% url 'tickets:support_ticket' %}">Submit a Ticket</a></li>
-          <li><a href="{% url 'core:contact' %}">Contact Us</a></li>
-          <li><a href="{% url 'core:about' %}">About</a></li>
+          <li><a href="{% url 'faqs:faq_list' %}">Frequently Asked Questions</a></li>
+          <li><a href="{% url 'core:error_codes' %}">Error Code Reference</a></li>
+          <li><a href="{% url 'tickets:support_ticket' %}">Raise a Support Ticket</a></li>
+          <li><a href="{% url 'core:health' %}">System Health Monitor</a></li>
         </ul>
       </div>
     </div>
-    <div class="footer-bottom">&copy; 2026 CineTix – Tamil Movie Tickets. Built with Django.</div>
+    <div class="footer-bottom">
+      &copy; 2026 CineTix Tamil Cinemas. Built with Django. All Rights Reserved.
+    </div>
   </div>
 </footer>
 
-<!-- AI Chat Widget on every page -->
+<!-- CineBot AI Chat Widget (Black & Red Cinema Theme) -->
 <div id="chat-widget" aria-label="AI Assistant">
   <div id="chat-box" role="dialog" aria-modal="true" aria-label="CineBot chat">
     <div class="chat-header">
       <div class="chat-header-left">
         <div class="chat-avatar">🎬</div>
         <div>
-          <h3>CineBot</h3>
-          <p>Tamil Movie Assistant</p>
+          <h3>CineBot AI</h3>
+          <p>Instant Ticket Booking & Support</p>
         </div>
       </div>
       <button id="chat-close" aria-label="Close chat">✕</button>
     </div>
     <div id="chat-messages" role="log" aria-live="polite"></div>
     <div id="chat-input-row">
-      <textarea id="chat-input" rows="1" placeholder="Ask about movies, bookings, errors…" aria-label="Chat input"></textarea>
+      <textarea id="chat-input" rows="1" placeholder="Ask about movies, book tickets, or pay…" aria-label="Chat input"></textarea>
       <button id="chat-send" aria-label="Send message">➤</button>
     </div>
   </div>
-  <button id="chat-toggle" aria-label="Open AI Assistant">💬</button>
+  <button id="chat-toggle" aria-label="Open AI Assistant" title="Chat with CineBot">💬</button>
 </div>
 
 {% block extra_js %}{% endblock %}

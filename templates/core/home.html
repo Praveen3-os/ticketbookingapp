@@ -1,78 +1,97 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Home – Tamil Movie Ticket Booking{% endblock %}
+{% block title %}CineTix – Tamil Movie Tickets & Showtimes{% endblock %}
 
 {% block content %}
+<!-- Cinema Hero Header with Red Accent -->
 <section class="hero">
   <div class="container">
     {% if weather %}
-    <div style="margin-bottom:1.5rem">
+    <div style="margin-bottom:1.2rem">
       <div class="weather-widget">
-        <span>🌤️</span>
-        <span><strong>{{ weather.city }}</strong>
-          {% if weather.temp != '--' %}{{ weather.temp }}°C – {% endif %}{{ weather.description }}
-          {% if weather.source == 'fallback' %}<span style="font-size:.78rem;color:var(--text-muted)">(offline)</span>{% endif %}
-        </span>
+        <span>📍 <strong>Chennai Cinemas</strong></span>
+        <span>•</span>
+        <span>{{ weather.temp }}°C {{ weather.description }}</span>
       </div>
     </div>
     {% endif %}
-    <h1>Book <span>Tamil Movie</span> Tickets Online</h1>
-    <p>Original Kollywood Blockbusters • Chennai Theaters • Instant Confirmation • Best FDFS Experience</p>
+    <h1>BOOK <span>TAMIL MOVIE</span> TICKETS</h1>
+    <p style="color:#d4d4d8;font-size:1.15rem;font-weight:500">
+      Latest Kollywood Blockbusters in Chennai Theaters • Instant Seat Selection • UPI & Card Payments
+    </p>
     <div class="hero-actions">
-      <a href="{% url 'tickets:movie_list' %}" class="btn btn-primary">🎬 Browse Now Showing</a>
-      <a href="{% url 'faqs:faq_list' %}" class="btn btn-secondary">❓ FAQ & Help</a>
+      <a href="{% url 'tickets:movie_list' %}" class="btn btn-primary" style="font-size:1.05rem;padding:.8rem 2rem">
+        🎬 Browse All Movies
+      </a>
+      <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-secondary" style="font-size:1.05rem;padding:.8rem 1.8rem">
+        🤖 Book via CineBot AI
+      </button>
     </div>
   </div>
 </section>
 
-<!-- Now Showing Grid with Original Posters -->
-<section class="section" style="background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+<!-- Trending Movies Section (4K Poster Grid) -->
+<section class="section" style="padding-top:2.5rem">
   <div class="container">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.8rem;flex-wrap:wrap;gap:1rem">
       <div>
-        <h2 class="section-title" style="margin:0">🔥 Now Showing in Chennai</h2>
-        <p class="section-subtitle" style="margin:0">Original Tamil movies running across top Chennai screens.</p>
+        <h2 class="section-title" style="margin:0;display:flex;align-items:center;gap:.5rem">
+          <span style="color:var(--primary)">●</span> NOW SHOWING IN CHENNAI
+        </h2>
+        <p class="section-subtitle" style="margin:0;color:#a1a1aa">Select a movie to pick show timings, cinema screen, and seats</p>
       </div>
-      <a href="{% url 'tickets:movie_list' %}" class="btn btn-secondary btn-sm">View All Movies &rarr;</a>
+      <a href="{% url 'tickets:movie_list' %}" style="color:var(--primary);font-weight:700;font-size:.95rem">
+        View All (10 Movies) &rarr;
+      </a>
     </div>
 
+    <!-- 4K Poster Cards Grid -->
     <div class="grid grid-3">
       {% for movie in latest_movies %}
-      <div class="card" style="display:flex;flex-direction:column">
-        <div style="position:relative;height:320px;overflow:hidden;background:#000">
+      <div class="card" style="display:flex;flex-direction:column;position:relative">
+        <div class="poster-4k-container">
           {% if movie.poster_image %}
-            <img src="{% static movie.poster_static_path %}" alt="{{ movie.title }}"
-                 style="width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .3s" />
+            <img src="{% static movie.poster_static_path %}" alt="{{ movie.title }}" class="poster-4k-img" />
           {% else %}
             <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem">🎬</div>
           {% endif %}
-          <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);padding:4px 10px;border-radius:6px;font-size:.78rem;font-weight:700;color:#fff">
+          <!-- 4K Ultra HD Badge -->
+          <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.85);border:1px solid #ff3b56;color:#ff3b56;padding:3px 8px;border-radius:4px;font-size:.72rem;font-weight:900;letter-spacing:.08em">
+            4K UHD
+          </div>
+          <!-- Certification Badge -->
+          <div style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);border:1px solid var(--border);color:#fff;padding:3px 8px;border-radius:4px;font-size:.75rem;font-weight:800">
             {{ movie.certificate }}
           </div>
-          <div style="position:absolute;bottom:10px;left:10px;background:rgba(99,102,241,0.9);padding:3px 8px;border-radius:4px;font-size:.75rem;font-weight:700;color:#fff">
-            {{ movie.get_genre_display }}
+          <!-- Genre Strip -->
+          <div style="position:absolute;bottom:12px;left:12px;background:var(--primary);color:#fff;padding:4px 10px;border-radius:4px;font-size:.75rem;font-weight:800;letter-spacing:.04em;box-shadow:0 2px 10px rgba(0,0,0,0.8)">
+            {{ movie.get_genre_display|upper }}
           </div>
         </div>
 
         <div class="card-body" style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
           <div>
-            <h3 class="card-title" style="font-size:1.2rem;margin-bottom:.2rem">{{ movie.title }}</h3>
+            <h3 class="card-title" style="font-size:1.3rem;margin-bottom:.2rem">
+              {{ movie.title }}
+            </h3>
             {% if movie.title_tamil %}
-              <p style="color:var(--primary);font-size:1rem;font-weight:600;margin-bottom:.5rem">{{ movie.title_tamil }}</p>
+              <p style="color:var(--text-red);font-size:1.05rem;font-weight:700;margin-bottom:.5rem">
+                {{ movie.title_tamil }}
+              </p>
             {% endif %}
-            <p class="card-text" style="font-size:.85rem;margin-bottom:.3rem">
-              🎬 <strong>Director:</strong> {{ movie.director }}
+            <p class="card-text" style="color:#d4d4d8;font-size:.86rem;margin-bottom:.3rem">
+              🎬 <strong style="color:#fff">Director:</strong> {{ movie.director }}
             </p>
-            <p class="card-text" style="font-size:.82rem;color:var(--text-muted);margin-bottom:.5rem">
+            <p class="card-text" style="color:#a1a1aa;font-size:.82rem;margin-bottom:.4rem">
               ⭐ {{ movie.cast|truncatewords:6 }}
             </p>
-            <p class="card-text" style="font-size:.82rem">
-              ⏱️ {{ movie.duration_display }}
+            <p class="card-text" style="color:#71717a;font-size:.82rem">
+              ⏱️ {{ movie.duration_display }} • Tamil (Original)
             </p>
           </div>
 
-          <div style="margin-top:1.2rem">
-            <a href="{% url 'tickets:movie_detail' movie.pk %}" class="btn btn-primary btn-sm" style="width:100%;padding:.6rem">
+          <div style="margin-top:1.2rem;display:flex;gap:.5rem">
+            <a href="{% url 'tickets:movie_detail' movie.pk %}" class="btn btn-primary btn-sm" style="flex:1;padding:.65rem;font-size:.9rem">
               🎟️ Book Tickets
             </a>
           </div>
@@ -83,36 +102,41 @@
   </div>
 </section>
 
-<!-- Features -->
-<section class="section">
+<!-- Top Chennai Theaters Quick Strip -->
+<section style="background:#0c0c10;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:3rem 0">
   <div class="container">
-    <h2 class="section-title" style="text-align:center">Why Book on CineTix?</h2>
-    <p class="section-subtitle" style="text-align:center">The easiest way to book Tamil movie tickets in Chennai.</p>
-    <div class="grid grid-3">
-      {% for icon, title, desc in features %}
-      <div class="card">
-        <div class="card-body" style="text-align:center">
-          <div style="font-size:2.5rem;margin-bottom:1rem">{{ icon }}</div>
-          <h3 class="card-title">{{ title }}</h3>
-          <p class="card-text">{{ desc }}</p>
-        </div>
-      </div>
-      {% endfor %}
+    <h2 style="font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:.4rem;text-align:center">
+      🏛️ CHENNAI THEATERS & PARTNER SCREENS
+    </h2>
+    <p style="text-align:center;color:#a1a1aa;font-size:.9rem;margin-bottom:1.8rem">
+      Experience Dolby Atmos sound and 4K laser projection at Chennai's iconic cinemas
+    </p>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Rohini Silver Screens (Koyambedu)</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">SPI Sathyam Cinemas (Royapettah)</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">AGS Cinemas (T. Nagar)</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Kamala Cinemas (Vadapalani)</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Kasi Theatre (Ashok Nagar)</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">PVR SKLS Galaxy Mall</span>
     </div>
   </div>
 </section>
 
-<!-- CineBot CTA -->
-<section class="section" style="background:var(--bg-card);border-top:1px solid var(--border)">
-  <div class="container" style="text-align:center">
-    <div style="font-size:3rem;margin-bottom:1rem">🤖</div>
-    <h2 class="section-title">Got Questions? Ask CineBot</h2>
-    <p class="section-subtitle" style="max-width:520px;margin:0 auto 1.5rem">
-      CineBot answers questions about Vijay, Rajini, Ajith releases, theater showtimes, error codes, and ticket booking support.
-    </p>
-    <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-primary">
-      💬 Chat with CineBot
-    </button>
+<!-- AI In-Chat Payment CTA Banner -->
+<section class="section">
+  <div class="container">
+    <div style="background:linear-gradient(135deg, #181822 0%, #101016 100%);border:1px solid rgba(248, 68, 100, 0.4);border-radius:16px;padding:3rem 2rem;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.8)">
+      <div style="font-size:3rem;margin-bottom:.75rem">⚡</div>
+      <h2 style="font-size:2rem;font-weight:900;color:#fff;margin-bottom:.5rem">
+        Book & Pay <span style="color:var(--primary)">Directly via CineBot AI</span>
+      </h2>
+      <p style="color:#d4d4d8;max-width:580px;margin:0 auto 1.8rem;font-size:1.05rem">
+        No long forms needed. Chat with CineBot to get movie recommendations, select seats, and complete your Google Pay / PhonePe UPI checkout in 30 seconds.
+      </p>
+      <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-primary" style="font-size:1.05rem;padding:.85rem 2.2rem">
+        💬 Open CineBot & Pay in Chat
+      </button>
+    </div>
   </div>
 </section>
 {% endblock %}
