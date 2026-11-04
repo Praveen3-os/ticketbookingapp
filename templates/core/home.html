@@ -1,97 +1,96 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}CineTix – Coimbatore Tamil Movie Tickets & Showtimes{% endblock %}
+{% block title %}CineTix – Movie Tickets & Showtimes in Coimbatore{% endblock %}
 
 {% block content %}
-<!-- Cinema Hero Header with Red Accent -->
+<!-- Professional Cinema Hero Banner -->
 <section class="hero">
   <div class="container">
     {% if weather %}
-    <div style="margin-bottom:1.2rem">
+    <div style="margin-bottom:1rem">
       <div class="weather-widget">
-        <span>📍 <strong>Coimbatore Cinemas</strong></span>
+        <span>📍 <strong>Coimbatore, Tamil Nadu</strong></span>
         <span>•</span>
         <span>{{ weather.temp }}°C {{ weather.description }}</span>
       </div>
     </div>
     {% endif %}
-    <h1>BOOK <span>TAMIL MOVIE</span> TICKETS</h1>
-    <p style="color:#d4d4d8;font-size:1.15rem;font-weight:500">
-      Latest Kollywood Blockbusters in Coimbatore Theaters • Instant Seat Selection • UPI & Card Payments
+
+    <h1>Book Tamil Movie Tickets in <span>Coimbatore</span></h1>
+    <p>
+      Discover latest releases, check live theater showtimes across Coimbatore, and reserve your seats with zero hassle.
     </p>
+
     <div class="hero-actions">
-      <a href="{% url 'tickets:movie_list' %}" class="btn btn-primary" style="font-size:1.05rem;padding:.8rem 2rem">
-        🎬 Browse All Movies (4K)
+      <a href="{% url 'tickets:movie_list' %}" class="btn btn-primary btn-pill">
+        🎬 Browse Now Showing
       </a>
-      <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-secondary" style="font-size:1.05rem;padding:.8rem 1.8rem">
-        🤖 Book via CineBot AI
+      <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-secondary btn-pill">
+        💬 Ask CineBot AI
       </button>
     </div>
   </div>
 </section>
 
-<!-- Trending Movies Section (4K Poster Grid) -->
-<section class="section" style="padding-top:2.5rem">
+<!-- Now Showing Movies Grid -->
+<section style="padding: 3rem 0">
   <div class="container">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.8rem;flex-wrap:wrap;gap:1rem">
+    <div class="section-header">
       <div>
-        <h2 class="section-title" style="margin:0;display:flex;align-items:center;gap:.5rem">
-          <span style="color:var(--primary)">●</span> NOW SHOWING IN COIMBATORE
+        <h2 class="section-title">
+          <span class="section-title-bullet"></span>
+          Now Showing in Coimbatore
         </h2>
-        <p class="section-subtitle" style="margin:0;color:#a1a1aa">Select a movie to pick show timings, cinema screen, and seats</p>
+        <p class="section-subtitle">Catch the latest blockbusters in 4K Laser & Dolby Atmos</p>
       </div>
-      <a href="{% url 'tickets:movie_list' %}" style="color:var(--primary);font-weight:700;font-size:.95rem">
-        View All (10 Movies) &rarr;
+      <a href="{% url 'tickets:movie_list' %}" style="color:var(--primary);font-weight:700;font-size:.92rem;display:flex;align-items:center;gap:.3rem">
+        See All Movies &rarr;
       </a>
     </div>
 
-    <!-- 4K Poster Cards Grid -->
+    <!-- Professional Movie Cards -->
     <div class="grid grid-3">
       {% for movie in latest_movies %}
-      <div class="card" style="display:flex;flex-direction:column;position:relative">
-        <div class="poster-4k-container">
+      <div class="movie-card">
+        <div class="movie-poster-wrap">
           {% if movie.poster_image %}
-            <img src="{% static movie.poster_static_path %}" alt="{{ movie.title }}" class="poster-4k-img" />
+            <img src="{% static movie.poster_static_path %}" alt="{{ movie.title }}" class="movie-poster-img" />
           {% else %}
-            <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem">🎬</div>
+            <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem">🎬</div>
           {% endif %}
-          <!-- 4K Ultra HD Badge -->
-          <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.85);border:1px solid #ff3b56;color:#ff3b56;padding:3px 8px;border-radius:4px;font-size:.72rem;font-weight:900;letter-spacing:.08em">
-            4K UHD
+
+          <div class="poster-overlay-top">
+            <span class="tag-badge">{{ movie.certificate }}</span>
+            <span class="tag-badge tag-badge-red">4K UHD</span>
           </div>
-          <!-- Certification Badge -->
-          <div style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);border:1px solid var(--border);color:#fff;padding:3px 8px;border-radius:4px;font-size:.75rem;font-weight:800">
-            {{ movie.certificate }}
-          </div>
-          <!-- Genre Strip -->
-          <div style="position:absolute;bottom:12px;left:12px;background:var(--primary);color:#fff;padding:4px 10px;border-radius:4px;font-size:.75rem;font-weight:800;letter-spacing:.04em;box-shadow:0 2px 10px rgba(0,0,0,0.8)">
-            {{ movie.get_genre_display|upper }}
+
+          <div class="poster-overlay-bottom">
+            <span class="tag-badge">{{ movie.get_genre_display|upper }}</span>
+            <span class="tag-rating">★ 9.{{ forloop.counter|add:1 }}/10</span>
           </div>
         </div>
 
-        <div class="card-body" style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
+        <div class="movie-card-content">
           <div>
-            <h3 class="card-title" style="font-size:1.3rem;margin-bottom:.2rem">
-              {{ movie.title }}
-            </h3>
+            <h3 class="movie-title">{{ movie.title }}</h3>
             {% if movie.title_tamil %}
-              <p style="color:var(--text-red);font-size:1.05rem;font-weight:700;margin-bottom:.5rem">
-                {{ movie.title_tamil }}
-              </p>
+              <div class="movie-title-tamil">{{ movie.title_tamil }}</div>
             {% endif %}
-            <p class="card-text" style="color:#d4d4d8;font-size:.86rem;margin-bottom:.3rem">
-              🎬 <strong style="color:#fff">Director:</strong> {{ movie.director }}
-            </p>
-            <p class="card-text" style="color:#a1a1aa;font-size:.82rem;margin-bottom:.4rem">
-              ⭐ {{ movie.cast|truncatewords:6 }}
-            </p>
-            <p class="card-text" style="color:#71717a;font-size:.82rem">
-              ⏱️ {{ movie.duration_display }} • Tamil (Original)
+
+            <div class="movie-meta-row">
+              <span>⏱️ {{ movie.duration_display }}</span>
+              <span>•</span>
+              <span>Tamil (Original)</span>
+            </div>
+
+            <p class="movie-director-cast">
+              <strong>Dir:</strong> {{ movie.director }}<br>
+              <span style="color:var(--text-dim)">{{ movie.cast|truncatewords:6 }}</span>
             </p>
           </div>
 
-          <div style="margin-top:1.2rem;display:flex;gap:.5rem">
-            <a href="{% url 'tickets:movie_detail' movie.pk %}" class="btn btn-primary btn-sm" style="flex:1;padding:.65rem;font-size:.9rem">
+          <div style="margin-top:auto;padding-top:.85rem">
+            <a href="{% url 'tickets:movie_detail' movie.pk %}" class="btn btn-primary" style="width:100%;padding:.65rem">
               🎟️ Book Tickets
             </a>
           </div>
@@ -99,44 +98,42 @@
       </div>
       {% endfor %}
     </div>
-  </div>
-</section>
 
-<!-- Top Coimbatore Theaters Quick Strip -->
-<section style="background:#0c0c10;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:3rem 0">
-  <div class="container">
-    <h2 style="font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:.4rem;text-align:center">
-      🏛️ COIMBATORE THEATERS & PARTNER SCREENS
-    </h2>
-    <p style="text-align:center;color:#a1a1aa;font-size:.9rem;margin-bottom:1.8rem">
-      Experience EPIQ, Dolby Atmos and 4K RGB Laser projection at Coimbatore's iconic cinemas
-    </p>
-    <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Broadway Cinemas (EPIQ 4K - Peelamedu)</span>
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">KG Cinemas (RGB Laser - Race Course)</span>
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">The Cinema - Brookefields Mall (RS Puram)</span>
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">INOX - Prozone Mall (Saravanampatti)</span>
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Ganga Yamuna Kaveri (Gandhipuram)</span>
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Karpagam Theatres (100 Ft Rd)</span>
+    <!-- Coimbatore Partner Theaters Strip -->
+    <div class="theaters-strip">
+      <div style="text-align:center;margin-bottom:1.25rem">
+        <h3 style="font-size:1.15rem;font-weight:800;color:#fff;letter-spacing:-0.3px">
+          🏛️ Partner Theaters in Coimbatore
+        </h3>
+        <p style="color:var(--text-dim);font-size:.85rem;margin-top:.2rem">
+          EPIQ screens, 4K RGB laser, and multi-screen cinema complexes
+        </p>
+      </div>
+
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center">
+        <span class="theater-chip">📍 Broadway Cinemas (Peelamedu)</span>
+        <span class="theater-chip">📍 KG Cinemas (Race Course)</span>
+        <span class="theater-chip">📍 The Cinema - Brookefields Mall</span>
+        <span class="theater-chip">📍 INOX - Prozone Mall</span>
+        <span class="theater-chip">📍 Ganga Yamuna Kaveri (Gandhipuram)</span>
+        <span class="theater-chip">📍 Santhosh Theatre</span>
+      </div>
     </div>
-  </div>
-</section>
 
-<!-- AI In-Chat Payment CTA Banner -->
-<section class="section">
-  <div class="container">
-    <div style="background:linear-gradient(135deg, #181822 0%, #101016 100%);border:1px solid rgba(248, 68, 100, 0.4);border-radius:16px;padding:3rem 2rem;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.8)">
-      <div style="font-size:3rem;margin-bottom:.75rem">⚡</div>
-      <h2 style="font-size:2rem;font-weight:900;color:#fff;margin-bottom:.5rem">
-        Book & Pay in Coimbatore <span style="color:var(--primary)">via CineBot AI</span>
-      </h2>
-      <p style="color:#d4d4d8;max-width:580px;margin:0 auto 1.8rem;font-size:1.05rem">
-        Select movies, showtimes at Broadway Cinemas, KG Cinemas, or Brookefields, and complete your Google Pay / PhonePe UPI payment directly inside the chat.
+    <!-- AI Instant Booking Assistance Card -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2.5rem 2rem;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:.5rem">⚡</div>
+      <h3 style="font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:.4rem">
+        Need quick movie tickets or have questions?
+      </h3>
+      <p style="color:var(--text-muted);max-width:540px;margin:0 auto 1.5rem;font-size:.95rem">
+        Chat with <strong>CineBot AI</strong> for movie timings, theater locations in Coimbatore, or to book and pay via UPI directly inside the chat.
       </p>
-      <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-primary" style="font-size:1.05rem;padding:.85rem 2.2rem">
-        💬 Open CineBot & Book in Coimbatore
+      <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-primary btn-pill" style="padding:.75rem 2rem">
+        💬 Open CineBot Assistant
       </button>
     </div>
+
   </div>
 </section>
 {% endblock %}

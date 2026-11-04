@@ -4,31 +4,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}CineTix{% endblock %} | Tamil Movie Tickets in 4K</title>
-  <meta name="description" content="Book Tamil movie tickets in 4K UHD across Coimbatore theaters with instant seat selection and UPI payments." />
+  <title>{% block title %}CineTix{% endblock %} | Tamil Movie Tickets in Coimbatore</title>
+  <meta name="description" content="Book Tamil movie tickets in 4K UHD across Coimbatore cinemas with real-time seat selection and UPI checkout." />
   <link rel="stylesheet" href="{% static 'css/main.css' %}" />
   {% block extra_css %}{% endblock %}
 </head>
 <body>
 
+<!-- Navigation Bar with Location Selector -->
 <nav class="navbar" role="navigation">
   <div class="container">
-    <a href="{% url 'core:home' %}" class="navbar-brand">
-      <span style="color:#f84464;font-size:1.8rem">🎬</span> CINE<span>TIX</span>
-    </a>
+    <div style="display:flex;align-items:center">
+      <a href="{% url 'core:home' %}" class="navbar-brand">
+        <span style="color:var(--primary);font-size:1.6rem">🎬</span>
+        <span>CINE<span style="color:var(--primary)">TIX</span></span>
+      </a>
+      
+      <!-- Professional Location Pill -->
+      <div class="location-picker" title="Current Location: Coimbatore">
+        <span class="location-dot"></span>
+        <span>Coimbatore</span>
+        <span style="font-size:.7rem;color:var(--text-dim)">▾</span>
+      </div>
+    </div>
+
     <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
+
     <ul class="nav-links" id="nav-links">
-      <li><a href="{% url 'core:home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Home</a></li>
-      <li><a href="{% url 'tickets:movie_list' %}" {% if 'tickets' in request.resolver_match.namespace and request.resolver_match.url_name != 'my_bookings' %}class="active"{% endif %}>Now Showing</a></li>
+      <li><a href="{% url 'core:home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Movies</a></li>
+      <li><a href="{% url 'tickets:movie_list' %}" {% if 'tickets' in request.resolver_match.namespace and request.resolver_match.url_name != 'my_bookings' %}class="active"{% endif %}>Cinemas</a></li>
       <li><a href="{% url 'faqs:faq_list' %}" {% if 'faqs' in request.resolver_match.namespace %}class="active"{% endif %}>FAQ</a></li>
       <li><a href="{% url 'core:error_codes' %}">Error Codes</a></li>
       <li><a href="{% url 'core:about' %}">About</a></li>
-      <li><a href="{% url 'core:contact' %}">Contact</a></li>
+      <li><a href="{% url 'core:contact' %}">Support</a></li>
       {% if user.is_authenticated %}
-        <li><a href="{% url 'tickets:my_bookings' %}" style="color:var(--text-red);font-weight:700">🎟️ My Bookings</a></li>
+        <li><a href="{% url 'tickets:my_bookings' %}" style="color:var(--primary);font-weight:700">🎟️ My Bookings</a></li>
         <li><a href="/admin/" class="nav-btn">Admin</a></li>
       {% else %}
-        <li><a href="/admin/login/" class="nav-btn">Login</a></li>
+        <li><a href="/admin/login/" class="nav-btn">Sign In</a></li>
       {% endif %}
     </ul>
   </div>
@@ -48,52 +61,54 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-col">
-        <h4 style="font-size:1.3rem;letter-spacing:-0.5px">🎬 CINE<span style="color:#fff">TIX</span></h4>
-        <p style="color:var(--text-muted);font-size:.88rem;line-height:1.7">
-          Coimbatore's premier platform for 4K Tamil cinema bookings. Instant seat reservations, FDFS releases, and UPI payments.
+        <h4 style="display:flex;align-items:center;gap:.4rem">
+          <span style="color:var(--primary)">🎬</span> CINE<span style="color:var(--primary)">TIX</span>
+        </h4>
+        <p style="color:var(--text-dim);font-size:.88rem;line-height:1.7">
+          Coimbatore's smart online ticket booking destination for Tamil cinema releases, EPIQ screens, and instant seat confirmation.
         </p>
       </div>
       <div class="footer-col">
-        <h4>Now Showing</h4>
+        <h4>Coimbatore Cinemas</h4>
         <ul>
-          <li><a href="{% url 'tickets:movie_list' %}">All Tamil Movies (4K)</a></li>
-          <li><a href="{% url 'tickets:movie_list' %}?genre=action">Action Blockbusters</a></li>
-          <li><a href="{% url 'tickets:movie_list' %}?genre=drama">Drama & Epics</a></li>
-          <li><a href="{% url 'tickets:movie_list' %}?genre=thriller">Thrillers</a></li>
+          <li><a href="{% url 'tickets:movie_list' %}">Broadway Cinemas (Peelamedu)</a></li>
+          <li><a href="{% url 'tickets:movie_list' %}">KG Cinemas (Race Course)</a></li>
+          <li><a href="{% url 'tickets:movie_list' %}">The Cinema (Brookefields Mall)</a></li>
+          <li><a href="{% url 'tickets:movie_list' %}">INOX (Prozone Mall)</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Help & Support</h4>
+        <h4>Support & Help</h4>
         <ul>
           <li><a href="{% url 'faqs:faq_list' %}">Frequently Asked Questions</a></li>
-          <li><a href="{% url 'core:error_codes' %}">Error Code Reference</a></li>
-          <li><a href="{% url 'tickets:support_ticket' %}">Raise a Support Ticket</a></li>
-          <li><a href="{% url 'core:health' %}">System Health Monitor</a></li>
+          <li><a href="{% url 'core:error_codes' %}">Error Codes (400, 404, 500, SEAT-001)</a></li>
+          <li><a href="{% url 'tickets:support_ticket' %}">Submit Support Ticket</a></li>
+          <li><a href="{% url 'core:health' %}">System Status</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      &copy; 2026 CineTix Tamil Cinemas. Built with Django. All Rights Reserved.
+      &copy; 2026 CineTix Coimbatore. Professional Movie Ticket Booking Platform. Built with Django.
     </div>
   </div>
 </footer>
 
-<!-- CineBot AI Chat Widget (Black & Red Cinema Theme) -->
+<!-- CineBot AI Chat Widget (Neat Cinema Theme) -->
 <div id="chat-widget" aria-label="AI Assistant">
-  <div id="chat-box" role="dialog" aria-modal="true" aria-label="CineBot chat">
+  <div id="chat-box" role="dialog" aria-modal="true" aria-label="CineBot AI Assistant">
     <div class="chat-header">
-      <div class="chat-header-left">
+      <div class="chat-header-left" style="display:flex;align-items:center;gap:.65rem">
         <div class="chat-avatar">🎬</div>
         <div>
           <h3>CineBot AI</h3>
-          <p>Instant Ticket Booking & Support</p>
+          <p>Coimbatore Movie Assistant</p>
         </div>
       </div>
       <button id="chat-close" aria-label="Close chat">✕</button>
     </div>
     <div id="chat-messages" role="log" aria-live="polite"></div>
     <div id="chat-input-row">
-      <textarea id="chat-input" rows="1" placeholder="Ask about movies, book tickets, or pay…" aria-label="Chat input"></textarea>
+      <textarea id="chat-input" rows="1" placeholder="Ask about movies, timings, or book tickets…" aria-label="Chat input"></textarea>
       <button id="chat-send" aria-label="Send message">➤</button>
     </div>
   </div>

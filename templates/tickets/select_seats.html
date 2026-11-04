@@ -1,140 +1,18 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Select Seats & Timing – {{ showtime.movie.title }}{% endblock %}
-
-{% block extra_css %}
-<style>
-  .seat-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-    align-items: center;
-    margin: 1.8rem 0;
-  }
-  .seat-row {
-    display: flex;
-    gap: 9px;
-    align-items: center;
-  }
-  .row-label {
-    width: 26px;
-    text-align: center;
-    font-weight: 800;
-    color: var(--primary);
-    font-size: .9rem;
-  }
-  .seat-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: #181822;
-    color: #fff;
-    font-size: .78rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all .15s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .seat-btn:hover:not(.booked) {
-    border-color: var(--primary);
-    background: rgba(248, 68, 100, 0.25);
-    transform: scale(1.1);
-  }
-  .seat-btn.selected {
-    background: var(--primary) !important;
-    border-color: #ff6b82 !important;
-    color: #fff !important;
-    box-shadow: 0 0 16px rgba(248, 68, 100, 0.85);
-  }
-  .seat-btn.booked {
-    background: #1e1e24;
-    color: #52525b;
-    border-color: #121216;
-    cursor: not-allowed;
-    opacity: 0.5;
-    text-decoration: line-through;
-  }
-  .seat-legend {
-    display: flex;
-    gap: 2rem;
-    justify-content: center;
-    margin: 1.2rem 0;
-    font-size: .88rem;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-  }
-  .legend-box {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-  }
-  .screen-curve {
-    height: 8px;
-    width: 80%;
-    margin: 0 auto;
-    background: linear-gradient(90deg, transparent, var(--primary), transparent);
-    border-radius: 50% 50% 0 0;
-    box-shadow: 0 -4px 24px var(--primary);
-  }
-  .timing-pill {
-    padding: .6rem 1.2rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: #16161f;
-    color: #fff;
-    font-weight: 700;
-    font-size: .9rem;
-    text-decoration: none !important;
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all .2s;
-  }
-  .timing-pill:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-  }
-  .timing-pill.active {
-    background: var(--primary);
-    border-color: #ff6b82;
-    color: #fff;
-    box-shadow: 0 0 16px rgba(248, 68, 100, 0.6);
-  }
-  .pay-option {
-    border: 1px solid var(--border);
-    background: #14141c;
-    border-radius: 8px;
-    padding: .85rem 1.1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: .85rem;
-    transition: border-color .2s;
-  }
-  .pay-option:hover {
-    border-color: var(--primary);
-  }
-  .pay-option input[type="radio"] {
-    accent-color: var(--primary);
-  }
-</style>
-{% endblock %}
+{% block title %}Select Seats & Showtiming – {{ showtime.movie.title }}{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width:880px;margin:0 auto;padding-top:2rem">
-  <a href="{% url 'tickets:movie_detail' showtime.movie.pk %}" style="color:var(--text-muted);font-size:.9rem;font-weight:600">&larr; Back to Movie Details</a>
+<div class="container" style="max-width:900px;padding-top:1.5rem">
+  <a href="{% url 'tickets:movie_detail' showtime.movie.pk %}" style="color:var(--text-muted);font-size:.88rem;font-weight:600;display:inline-flex;align-items:center;gap:.3rem;margin-bottom:1.25rem">
+    &larr; Back to Showtimes
+  </a>
 
-  <!-- Header Info (Black with Red Accents) -->
-  <div class="card" style="margin-top:1.5rem;border:1px solid rgba(248,68,100,0.3)">
-    <div class="card-body">
+  <!-- Movie Header Banner -->
+  <div class="card" style="margin-bottom:1.5rem">
+    <div class="card-body" style="padding:1.4rem 1.6rem">
       <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
-        <div style="flex:0 0 85px;height:120px;overflow:hidden;border-radius:8px;background:#000;position:relative;border:1px solid var(--border)">
+        <div style="flex:0 0 75px;height:105px;overflow:hidden;border-radius:var(--radius-md);background:#000;position:relative;border:1px solid var(--border)">
           {% if showtime.movie.poster_image %}
             <img src="{% static showtime.movie.poster_static_path %}" alt="{{ showtime.movie.title }}"
                  style="width:100%;height:100%;object-fit:cover" />
@@ -143,15 +21,16 @@
           {% endif %}
           <div style="position:absolute;top:4px;left:4px;background:#000;color:#ff3b56;font-size:.65rem;font-weight:900;padding:1px 4px;border-radius:2px">4K</div>
         </div>
+
         <div>
-          <h1 style="font-size:1.8rem;font-weight:900;margin:0;color:#fff">{{ showtime.movie.title }}</h1>
+          <h1 style="font-size:1.6rem;font-weight:900;margin:0;color:#fff">{{ showtime.movie.title }}</h1>
           {% if showtime.movie.title_tamil %}
-            <p style="color:var(--text-red);font-size:1.15rem;font-weight:700;margin:.2rem 0">{{ showtime.movie.title_tamil }}</p>
+            <div style="color:var(--text-brand);font-size:1.05rem;font-weight:700;margin:.2rem 0">{{ showtime.movie.title_tamil }}</div>
           {% endif %}
-          <p style="color:#d4d4d8;font-size:.9rem;margin:0">
-            🏛️ <strong>{{ showtime.theater.name }}</strong>, {{ showtime.theater.location }}
+          <p style="color:#cbd5e1;font-size:.88rem;margin:0">
+            🏛️ <strong>{{ showtime.theater.name }}</strong> • {{ showtime.theater.location }}
           </p>
-          <p style="color:#a1a1aa;font-size:.85rem;margin-top:.2rem">
+          <p style="color:var(--text-dim);font-size:.84rem;margin-top:.25rem">
             📅 {{ showtime.show_date|date:"l, d M Y" }} • ₹{{ showtime.price|floatformat:0 }} per ticket
           </p>
         </div>
@@ -159,52 +38,53 @@
     </div>
   </div>
 
-  <!-- SHOW TIMINGS SELECTOR (RED & BLACK) -->
-  <div class="card" style="margin-top:1rem">
-    <div class="card-body">
-      <h3 style="font-size:1rem;font-weight:800;margin-bottom:1rem;color:var(--primary);text-transform:uppercase;letter-spacing:.06em">
-        ⏰ SELECT SHOW TIMING ({{ showtime.show_date|date:"d M Y" }})
-      </h3>
-      <div style="display:flex;gap:.85rem;flex-wrap:wrap">
+  <!-- Show Timings Switcher -->
+  <div class="card" style="margin-bottom:1.5rem">
+    <div class="card-body" style="padding:1.25rem 1.6rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.5rem">
+        <span style="font-size:.85rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em">
+          ⏰ Select Show Timing for {{ showtime.show_date|date:"d M Y" }}
+        </span>
+      </div>
+
+      <div class="timing-pills-row">
         {% for st in other_showtimes %}
           <a href="{% url 'tickets:select_seats' st.pk %}"
-             class="timing-pill {% if st.pk == showtime.pk %}active{% endif %}">
-            <span style="font-size:1.05rem">{{ st.show_time|time:"h:i A" }}</span>
-            <span style="font-size:.75rem;opacity:.9">{{ st.get_show_label_display }}</span>
+             class="showtime-pill {% if st.pk == showtime.pk %}active{% endif %}">
+            <span style="font-size:1rem">{{ st.show_time|time:"h:i A" }}</span>
+            <span style="font-size:.72rem;opacity:.85;margin-top:2px">{{ st.get_show_label_display }}</span>
           </a>
         {% endfor %}
       </div>
     </div>
   </div>
 
-  <!-- INTERACTIVE CINEMA SEAT SELECTION -->
-  <div class="card" style="margin-top:1rem">
-    <div class="card-body">
-      <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:1rem;text-align:center;color:#fff">
-        🎟️ SELECT YOUR CINEMA SEATS
-      </h3>
+  <!-- Cinema Seats Selection Section -->
+  <div class="card">
+    <div class="card-body" style="padding:1.6rem">
+      <h2 style="font-size:1.15rem;font-weight:800;text-align:center;color:#fff;margin-bottom:1rem">
+        Select Your Seats
+      </h2>
 
-      <!-- Curved Red Cinema Screen Graphic -->
-      <div style="margin-bottom:2.2rem;text-align:center">
-        <div class="screen-curve"></div>
-        <p style="font-size:.78rem;letter-spacing:.25em;color:var(--text-red);text-transform:uppercase;font-weight:700;margin-top:.7rem">
-          ALL EYES THIS WAY • CINEMA SCREEN
-        </p>
+      <!-- Screen Graphic -->
+      <div class="screen-container">
+        <div class="screen-arc"></div>
+        <div class="screen-label">All Eyes This Way • Cinema Screen</div>
       </div>
 
       <!-- Legend -->
-      <div class="seat-legend">
-        <div class="legend-item">
-          <div class="legend-box" style="background:#181822;border:1px solid var(--border)"></div>
-          <span style="color:#a1a1aa">Available</span>
+      <div style="display:flex;gap:1.8rem;justify-content:center;margin-bottom:1.5rem;font-size:.84rem">
+        <div style="display:flex;align-items:center;gap:.4rem">
+          <div style="width:16px;height:16px;border-radius:4px;background:var(--bg-surface-elevated);border:1px solid var(--border)"></div>
+          <span style="color:var(--text-muted)">Available</span>
         </div>
-        <div class="legend-item">
-          <div class="legend-box" style="background:var(--primary);box-shadow:0 0 10px var(--primary)"></div>
+        <div style="display:flex;align-items:center;gap:.4rem">
+          <div style="width:16px;height:16px;border-radius:4px;background:var(--primary)"></div>
           <span style="color:#fff;font-weight:700">Selected</span>
         </div>
-        <div class="legend-item">
-          <div class="legend-box" style="background:#1e1e24"></div>
-          <span style="color:#52525b">Sold Out</span>
+        <div style="display:flex;align-items:center;gap:.4rem">
+          <div style="width:16px;height:16px;border-radius:4px;background:#191b24"></div>
+          <span style="color:#475569">Sold Out</span>
         </div>
       </div>
 
@@ -228,67 +108,68 @@
         {% endfor %}
       </div>
 
-      <!-- Selected Seats Banner -->
-      <div style="background:#14141c;border:1px solid rgba(248,68,100,0.3);border-radius:10px;padding:1.2rem 1.4rem;margin:1.8rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <!-- Live Selection Summary Drawer -->
+      <div style="background:var(--bg-surface-elevated);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.15rem 1.4rem;margin:1.8rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
         <div>
-          <span style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;font-weight:700">SELECTED SEATS</span>
-          <p id="selectedSeatsDisplay" style="font-size:1.25rem;font-weight:800;color:var(--text-red);margin:.2rem 0">None selected</p>
+          <span style="color:var(--text-dim);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Selected Seats</span>
+          <div id="selectedSeatsDisplay" style="font-size:1.15rem;font-weight:800;color:var(--primary);margin-top:.2rem">None selected</div>
         </div>
         <div style="text-align:right">
-          <span style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;font-weight:700">TOTAL PAYABLE</span>
-          <p id="totalPriceDisplay" style="font-size:1.5rem;font-weight:900;color:#fff;margin:.2rem 0">₹0</p>
+          <span style="color:var(--text-dim);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Total Payable</span>
+          <div id="totalPriceDisplay" style="font-size:1.4rem;font-weight:900;color:#fff;margin-top:.2rem">₹0</div>
         </div>
       </div>
 
-      <!-- CHECKOUT FORM -->
+      <!-- Payment & Checkout -->
       {% if user.is_authenticated %}
       <form method="post" action="{% url 'tickets:book_showtime' showtime.pk %}" id="checkoutForm">
         {% csrf_token %}
         <input type="hidden" name="seat_numbers" id="seatNumbersInput" value="" />
         <input type="hidden" name="seats" id="seatsCountInput" value="0" />
 
-        <h4 style="font-size:1rem;font-weight:800;margin:1.8rem 0 .85rem;color:#fff;letter-spacing:-0.2px">
-          💳 SELECT PAYMENT METHOD
-        </h4>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:.85rem;margin-bottom:1.8rem">
-          <label class="pay-option">
+        <h3 style="font-size:.95rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.85rem">
+          Select Payment Method
+        </h3>
+
+        <div class="payment-grid">
+          <label class="payment-card">
             <input type="radio" name="payment_method" value="Google Pay (UPI)" checked />
             <div>
-              <strong style="color:#fff">Google Pay</strong>
-              <div style="font-size:.78rem;color:var(--text-muted)">Instant UPI Transfer</div>
+              <strong style="color:#fff;font-size:.92rem">Google Pay</strong>
+              <div style="font-size:.75rem;color:var(--text-dim)">Instant UPI Transfer</div>
             </div>
           </label>
-          <label class="pay-option">
+          <label class="payment-card">
             <input type="radio" name="payment_method" value="PhonePe (UPI)" />
             <div>
-              <strong style="color:#fff">PhonePe</strong>
-              <div style="font-size:.78rem;color:var(--text-muted)">UPI / QR Scan</div>
+              <strong style="color:#fff;font-size:.92rem">PhonePe</strong>
+              <div style="font-size:.75rem;color:var(--text-dim)">UPI / QR Scan</div>
             </div>
           </label>
-          <label class="pay-option">
+          <label class="payment-card">
             <input type="radio" name="payment_method" value="Paytm (UPI)" />
             <div>
-              <strong style="color:#fff">Paytm UPI</strong>
-              <div style="font-size:.78rem;color:var(--text-muted)">UPI / Wallet</div>
+              <strong style="color:#fff;font-size:.92rem">Paytm UPI</strong>
+              <div style="font-size:.75rem;color:var(--text-dim)">UPI / Wallet</div>
             </div>
           </label>
-          <label class="pay-option">
+          <label class="payment-card">
             <input type="radio" name="payment_method" value="Credit / Debit Card" />
             <div>
-              <strong style="color:#fff">Debit / Credit Card</strong>
-              <div style="font-size:.78rem;color:var(--text-muted)">Visa / Mastercard / RuPay</div>
+              <strong style="color:#fff;font-size:.92rem">Card Payment</strong>
+              <div style="font-size:.75rem;color:var(--text-dim)">Visa / Mastercard / RuPay</div>
             </div>
           </label>
         </div>
 
-        <button type="submit" id="payBtn" class="btn btn-primary" style="width:100%;font-size:1.15rem;padding:1rem;cursor:not-allowed;opacity:0.5" disabled>
-          🔒 Select Seats to Proceed
+        <button type="submit" id="payBtn" class="btn btn-primary btn-pill" style="width:100%;font-size:1.05rem;padding:.85rem;cursor:not-allowed;opacity:0.5" disabled>
+          Select Seats to Proceed
         </button>
       </form>
       {% else %}
-      <div class="alert alert-info" style="text-align:center;padding:1.5rem">
-        <p style="margin-bottom:.8rem">Please log in to your CineTix account to complete seat booking & payment.</p>
-        <a href="/admin/login/?next={{ request.path }}" class="btn btn-primary btn-sm">Login with Account</a>
+      <div style="background:var(--bg-surface-elevated);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;text-align:center">
+        <p style="color:var(--text-muted);margin-bottom:.8rem">Please sign in to complete your ticket booking and seat reservation.</p>
+        <a href="/admin/login/?next={{ request.path }}" class="btn btn-primary btn-sm btn-pill">Sign In to Book</a>
       </div>
       {% endif %}
 
@@ -338,7 +219,7 @@
         payBtn.disabled = false;
         payBtn.style.opacity = '1';
         payBtn.style.cursor = 'pointer';
-        payBtn.textContent = `🔒 Pay ₹${total.toFixed(0)} & Book ${count} Ticket(s)`;
+        payBtn.textContent = `Pay ₹${total.toFixed(0)} & Book ${count} Ticket(s)`;
       }
     } else {
       selectedSeatsDisplay.textContent = 'None selected';
@@ -349,12 +230,12 @@
         payBtn.disabled = true;
         payBtn.style.opacity = '0.5';
         payBtn.style.cursor = 'not-allowed';
-        payBtn.textContent = '🔒 Select Seats to Proceed';
+        payBtn.textContent = 'Select Seats to Proceed';
       }
     }
   }
 
-  // Pre-select center seats
+  // Pre-select 2 center seats for immediate preview
   const defaultSeat = document.querySelector('.seat-btn[data-seat="C5"]:not(.booked)') || document.querySelector('.seat-btn[data-seat="D5"]:not(.booked)');
   if (defaultSeat) {
     defaultSeat.click();

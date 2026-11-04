@@ -1,75 +1,79 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Now Showing – Tamil Movies in 4K UHD{% endblock %}
+{% block title %}Now Showing – Tamil Movies in Coimbatore{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div class="container">
-    <h1 style="display:flex;align-items:center;gap:.6rem">
-      <span style="color:var(--primary)">●</span> NOW SHOWING (TAMIL CINEMA)
-    </h1>
-    <p>Watch in 4K Laser Projection & Dolby Atmos across top Coimbatore cinemas.</p>
+<div class="container" style="padding-top:1.5rem">
+  <div class="section-header">
+    <div>
+      <h1 class="section-title">
+        <span class="section-title-bullet"></span>
+        Now Showing in Coimbatore
+      </h1>
+      <p class="section-subtitle">Catch original Tamil blockbusters in 4K Laser & Dolby Atmos</p>
+    </div>
   </div>
-</div>
 
-<div class="container">
-  <!-- Genre filters -->
-  <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:2.5rem">
-    <a href="{% url 'tickets:movie_list' %}" class="btn btn-sm {% if not selected_genre %}btn-primary{% else %}btn-secondary{% endif %}">All Genres</a>
+  <!-- Category Filter Tabs -->
+  <div class="filter-tabs">
+    <a href="{% url 'tickets:movie_list' %}" class="filter-tab {% if not selected_genre %}active{% endif %}">All Genres</a>
     {% for val, label in genres %}
-    <a href="?genre={{ val }}" class="btn btn-sm {% if selected_genre == val %}btn-primary{% else %}btn-secondary{% endif %}">{{ label }}</a>
+    <a href="?genre={{ val }}" class="filter-tab {% if selected_genre == val %}active{% endif %}">{{ label }}</a>
     {% endfor %}
   </div>
 
+  <!-- Movies Grid -->
   <div class="grid grid-3">
     {% for movie in movies %}
-    <div class="card" style="display:flex;flex-direction:column">
-      <div class="poster-4k-container">
+    <div class="movie-card">
+      <div class="movie-poster-wrap">
         {% if movie.poster_image %}
-          <img src="{% static movie.poster_static_path %}" alt="{{ movie.title }}" class="poster-4k-img" />
+          <img src="{% static movie.poster_static_path %}" alt="{{ movie.title }}" class="movie-poster-img" />
         {% else %}
-          <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem">🎬</div>
+          <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem">🎬</div>
         {% endif %}
-        <!-- 4K Badge -->
-        <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.85);border:1px solid #ff3b56;color:#ff3b56;padding:3px 8px;border-radius:4px;font-size:.72rem;font-weight:900;letter-spacing:.08em">
-          4K UHD
+
+        <div class="poster-overlay-top">
+          <span class="tag-badge">{{ movie.certificate }}</span>
+          <span class="tag-badge tag-badge-red">4K UHD</span>
         </div>
-        <div style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);border:1px solid var(--border);color:#fff;padding:3px 8px;border-radius:4px;font-size:.75rem;font-weight:800">
-          {{ movie.certificate }}
-        </div>
-        <div style="position:absolute;bottom:12px;left:12px;background:var(--primary);color:#fff;padding:4px 10px;border-radius:4px;font-size:.75rem;font-weight:800">
-          {{ movie.get_genre_display|upper }}
+
+        <div class="poster-overlay-bottom">
+          <span class="tag-badge">{{ movie.get_genre_display|upper }}</span>
+          <span class="tag-rating">★ 9.{{ forloop.counter|add:1 }}/10</span>
         </div>
       </div>
 
-      <div class="card-body" style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
+      <div class="movie-card-content">
         <div>
-          <h3 class="card-title" style="font-size:1.35rem;margin-bottom:.2rem">{{ movie.title }}</h3>
+          <h3 class="movie-title">{{ movie.title }}</h3>
           {% if movie.title_tamil %}
-            <p style="color:var(--text-red);font-size:1.05rem;font-weight:700;margin-bottom:.5rem">{{ movie.title_tamil }}</p>
+            <div class="movie-title-tamil">{{ movie.title_tamil }}</div>
           {% endif %}
-          <p class="card-text" style="color:#d4d4d8;font-size:.86rem;margin-bottom:.3rem">
-            🎬 <strong>Director:</strong> {{ movie.director }}
-          </p>
-          <p class="card-text" style="font-size:.82rem;color:var(--text-muted);margin-bottom:.5rem">
-            ⭐ <strong>Cast:</strong> {{ movie.cast }}
-          </p>
-          <p class="card-text" style="font-size:.82rem;color:#71717a">
-            ⏱️ {{ movie.duration_display }} • Tamil (Original)
+
+          <div class="movie-meta-row">
+            <span>⏱️ {{ movie.duration_display }}</span>
+            <span>•</span>
+            <span>Tamil (Original)</span>
+          </div>
+
+          <p class="movie-director-cast">
+            <strong>Dir:</strong> {{ movie.director }}<br>
+            <span style="color:var(--text-dim)">{{ movie.cast|truncatewords:6 }}</span>
           </p>
         </div>
 
-        <div style="margin-top:1.4rem">
-          <a href="{% url 'tickets:movie_detail' movie.pk %}" class="btn btn-primary btn-sm" style="width:100%;padding:.7rem;font-size:.95rem">
-            🎟️ Book Tickets & Select Show
+        <div style="margin-top:auto;padding-top:.85rem">
+          <a href="{% url 'tickets:movie_detail' movie.pk %}" class="btn btn-primary" style="width:100%;padding:.65rem">
+            🎟️ View Showtimes & Book
           </a>
         </div>
       </div>
     </div>
     {% empty %}
     <div style="grid-column:1/-1;text-align:center;padding:4rem">
-      <p style="color:var(--text-muted);font-size:1.1rem">No movies found in this genre.</p>
-      <a href="{% url 'tickets:movie_list' %}" class="btn btn-secondary" style="margin-top:1rem">Show All Movies</a>
+      <p style="color:var(--text-muted);font-size:1.05rem">No movies found in this genre.</p>
+      <a href="{% url 'tickets:movie_list' %}" class="btn btn-secondary btn-sm" style="margin-top:1rem">Show All Movies</a>
     </div>
     {% endfor %}
   </div>
