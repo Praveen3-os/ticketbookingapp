@@ -14,7 +14,7 @@ if env_file.exists():
 
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-change-me-in-production')
 DEBUG = env('DEBUG', default=True)
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '.onrender.com', '.railway.app', '.herokuapp.com', '*'])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -135,3 +135,5 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'https://*.railway.app', 'https://*.herokuapp.com', 'http://127.0.0.1:8000', 'http://localhost:8000']

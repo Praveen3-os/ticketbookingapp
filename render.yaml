@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: cinetix-coimbatore
+    env: python
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate"
+    startCommand: "gunicorn ticketsite.wsgi:application"
+    envVars:
+      - key: DEBUG
+        value: "True"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.9.6

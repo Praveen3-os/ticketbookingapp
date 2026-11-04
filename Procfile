@@ -1,2 +1,1 @@
-web: gunicorn ticketsite.wsgi --chdir ticketsite --log-file -
-
+web: gunicorn ticketsite.wsgi:application --log-file -
