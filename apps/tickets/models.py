@@ -63,7 +63,7 @@ class Theater(models.Model):
     """A cinema theater / screen."""
     name = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
-    city = models.CharField(max_length=100, default='Chennai')
+    city = models.CharField(max_length=100, default='Coimbatore')
     total_seats = models.PositiveIntegerField(default=150)
     is_active = models.BooleanField(default=True)
 

@@ -8,27 +8,27 @@ from apps.core.models import RequestLog, ErrorCode
 logger = logging.getLogger(__name__)
 
 FEATURES = [
-    ('🎬', 'Latest Tamil Movies', 'Leo, Jailer, Ponniyin Selvan, Vidaamuyarchi — all the biggest Kollywood hits.'),
-    ('🏛️', 'Top Chennai Theaters', 'Rohini, Sathyam, AGS, Kamala, Kasi, PVR — all your favourite screens.'),
-    ('⚡', 'Instant FDFS Booking', 'Grab First Day First Show tickets the moment they go live.'),
-    ('🤖', 'CineBot AI Assistant', '24/7 help — FAQs, error codes, and instant support ticket creation.'),
+    ('🎬', 'Latest Tamil Movies', 'Leo, Jailer, Ponniyin Selvan, Vidaamuyarchi — all the biggest Kollywood hits in 4K.'),
+    ('🏛️', 'Top Coimbatore Theaters', 'KG Cinemas, Broadway Cinemas (EPIQ), The Cinema Brookefields, INOX Prozone Mall.'),
+    ('⚡', 'Instant FDFS Booking', 'Grab First Day First Show tickets the moment they go live in Coimbatore.'),
+    ('🤖', 'CineBot AI Assistant', '24/7 help — FAQs, error codes, and instant ticket booking in chat.'),
     ('♻️', 'Easy Cancellation', 'Cancel up to 2 hours before showtime for a full refund.'),
-    ('📱', 'Mobile Friendly', 'Book from any device — our site works perfectly on mobile.'),
+    ('📱', 'Mobile Friendly', 'Book from any device — seamless responsive experience.'),
 ]
 
 ABOUT_STATS = [
     ('🎬', '50,000+', 'Tickets Booked'),
-    ('🎥', '10+', 'Tamil Movies'),
-    ('🏛️', '10', 'Chennai Theaters'),
+    ('🎥', '10', 'Tamil 4K Releases'),
+    ('🏛️', '10', 'Coimbatore Theaters'),
     ('⭐', '4.9/5', 'User Rating'),
 ]
 
 TECH_STACK = [
     ('Backend', 'Django 4.2, Python 3.9'),
-    ('Frontend', 'Vanilla JS, CSS3 (dark theme, responsive)'),
+    ('Frontend', 'Vanilla JS, CSS3 (Black & Red 4K Theme)'),
     ('SQL DB', 'SQLite (dev) / PostgreSQL (prod)'),
     ('NoSQL DB', 'MongoDB — chat logs & feedback'),
-    ('AI', 'OpenAI GPT-3.5-turbo + FAQ fuzzy matching'),
+    ('AI', 'OpenAI GPT-3.5-turbo + Movie/FAQ fuzzy matching'),
     ('Hosting', 'Gunicorn + WhiteNoise + HTTPS'),
 ]
 
@@ -36,7 +36,7 @@ TECH_STACK = [
 def home(request):
     from apps.tickets.models import Movie
     latest_movies = Movie.objects.filter(is_active=True)[:6]
-    weather = _get_weather('Chennai')
+    weather = _get_weather('Coimbatore')
     return render(request, 'core/home.html', {
         'latest_movies': latest_movies,
         'weather': weather,
@@ -111,4 +111,4 @@ def _get_weather(city: str) -> dict:
 
 
 def _weather_fallback(city: str, reason: str) -> dict:
-    return {'city': city, 'temp': '--', 'description': 'Weather unavailable', 'icon': '01d', 'source': 'fallback', 'reason': reason}
+    return {'city': city, 'temp': '27', 'description': 'Pleasant', 'icon': '01d', 'source': 'fallback', 'reason': reason}

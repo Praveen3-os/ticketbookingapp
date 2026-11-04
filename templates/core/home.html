@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}CineTix – Tamil Movie Tickets & Showtimes{% endblock %}
+{% block title %}CineTix – Coimbatore Tamil Movie Tickets & Showtimes{% endblock %}
 
 {% block content %}
 <!-- Cinema Hero Header with Red Accent -->
@@ -9,7 +9,7 @@
     {% if weather %}
     <div style="margin-bottom:1.2rem">
       <div class="weather-widget">
-        <span>📍 <strong>Chennai Cinemas</strong></span>
+        <span>📍 <strong>Coimbatore Cinemas</strong></span>
         <span>•</span>
         <span>{{ weather.temp }}°C {{ weather.description }}</span>
       </div>
@@ -17,11 +17,11 @@
     {% endif %}
     <h1>BOOK <span>TAMIL MOVIE</span> TICKETS</h1>
     <p style="color:#d4d4d8;font-size:1.15rem;font-weight:500">
-      Latest Kollywood Blockbusters in Chennai Theaters • Instant Seat Selection • UPI & Card Payments
+      Latest Kollywood Blockbusters in Coimbatore Theaters • Instant Seat Selection • UPI & Card Payments
     </p>
     <div class="hero-actions">
       <a href="{% url 'tickets:movie_list' %}" class="btn btn-primary" style="font-size:1.05rem;padding:.8rem 2rem">
-        🎬 Browse All Movies
+        🎬 Browse All Movies (4K)
       </a>
       <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-secondary" style="font-size:1.05rem;padding:.8rem 1.8rem">
         🤖 Book via CineBot AI
@@ -36,7 +36,7 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.8rem;flex-wrap:wrap;gap:1rem">
       <div>
         <h2 class="section-title" style="margin:0;display:flex;align-items:center;gap:.5rem">
-          <span style="color:var(--primary)">●</span> NOW SHOWING IN CHENNAI
+          <span style="color:var(--primary)">●</span> NOW SHOWING IN COIMBATORE
         </h2>
         <p class="section-subtitle" style="margin:0;color:#a1a1aa">Select a movie to pick show timings, cinema screen, and seats</p>
       </div>
@@ -102,22 +102,22 @@
   </div>
 </section>
 
-<!-- Top Chennai Theaters Quick Strip -->
+<!-- Top Coimbatore Theaters Quick Strip -->
 <section style="background:#0c0c10;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:3rem 0">
   <div class="container">
     <h2 style="font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:.4rem;text-align:center">
-      🏛️ CHENNAI THEATERS & PARTNER SCREENS
+      🏛️ COIMBATORE THEATERS & PARTNER SCREENS
     </h2>
     <p style="text-align:center;color:#a1a1aa;font-size:.9rem;margin-bottom:1.8rem">
-      Experience Dolby Atmos sound and 4K laser projection at Chennai's iconic cinemas
+      Experience EPIQ, Dolby Atmos and 4K RGB Laser projection at Coimbatore's iconic cinemas
     </p>
     <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Rohini Silver Screens (Koyambedu)</span>
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">SPI Sathyam Cinemas (Royapettah)</span>
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">AGS Cinemas (T. Nagar)</span>
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Kamala Cinemas (Vadapalani)</span>
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Kasi Theatre (Ashok Nagar)</span>
-      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">PVR SKLS Galaxy Mall</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Broadway Cinemas (EPIQ 4K - Peelamedu)</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">KG Cinemas (RGB Laser - Race Course)</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">The Cinema - Brookefields Mall (RS Puram)</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">INOX - Prozone Mall (Saravanampatti)</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Ganga Yamuna Kaveri (Gandhipuram)</span>
+      <span class="badge badge-primary" style="font-size:.85rem;padding:.5rem 1rem">Karpagam Theatres (100 Ft Rd)</span>
     </div>
   </div>
 </section>
@@ -128,13 +128,13 @@
     <div style="background:linear-gradient(135deg, #181822 0%, #101016 100%);border:1px solid rgba(248, 68, 100, 0.4);border-radius:16px;padding:3rem 2rem;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.8)">
       <div style="font-size:3rem;margin-bottom:.75rem">⚡</div>
       <h2 style="font-size:2rem;font-weight:900;color:#fff;margin-bottom:.5rem">
-        Book & Pay <span style="color:var(--primary)">Directly via CineBot AI</span>
+        Book & Pay in Coimbatore <span style="color:var(--primary)">via CineBot AI</span>
       </h2>
       <p style="color:#d4d4d8;max-width:580px;margin:0 auto 1.8rem;font-size:1.05rem">
-        No long forms needed. Chat with CineBot to get movie recommendations, select seats, and complete your Google Pay / PhonePe UPI checkout in 30 seconds.
+        Select movies, showtimes at Broadway Cinemas, KG Cinemas, or Brookefields, and complete your Google Pay / PhonePe UPI payment directly inside the chat.
       </p>
       <button onclick="document.getElementById('chat-toggle').click()" class="btn btn-primary" style="font-size:1.05rem;padding:.85rem 2.2rem">
-        💬 Open CineBot & Pay in Chat
+        💬 Open CineBot & Book in Coimbatore
       </button>
     </div>
   </div>

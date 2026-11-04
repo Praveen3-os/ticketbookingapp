@@ -17,7 +17,7 @@
     if (chatBox.classList.contains('open') && messages.children.length === 0) {
       appendBot(
         "👋 Vanakkam! I'm **CineBot**, your Tamil movie assistant.\n\n" +
-        "You can ask me about **movies, show timings, Chennai theaters, error codes**, or even **book tickets and pay directly inside this chat!**",
+        "You can ask me about **movies, show timings, Coimbatore theaters, error codes**, or even **book tickets and pay directly inside this chat!**",
         null,
         null,
         true // offer payment action
@@ -100,10 +100,10 @@
         <div style="margin-bottom:6px">
           <label style="font-size:0.75rem;color:#94a3b8">Movie:</label>
           <select id="chatMovieSelect" style="width:100%;padding:4px;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:4px;font-size:0.8rem">
-            <option value="1">Leo (10:00 AM FDFS @ Rohini)</option>
-            <option value="2">Jailer (07:30 PM @ Sathyam)</option>
-            <option value="5">Amaran (04:30 PM @ AGS)</option>
-            <option value="6">GOAT (01:30 PM @ Kamala)</option>
+            <option value="1">Leo (10:00 AM FDFS @ Broadway Cinemas Coimbatore)</option>
+            <option value="2">Jailer (07:30 PM @ KG Cinemas Coimbatore)</option>
+            <option value="5">Amaran (04:30 PM @ The Cinema Brookefields)</option>
+            <option value="6">GOAT (01:30 PM @ INOX Prozone Mall)</option>
           </select>
         </div>
         <div style="display:flex;gap:6px;margin-bottom:8px">
