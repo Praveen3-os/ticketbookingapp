@@ -14,7 +14,7 @@ if env_file.exists():
 
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-change-me-in-production')
 DEBUG = env('DEBUG', default=True)
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '.onrender.com', '.railway.app', '.herokuapp.com', '*'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '.onrender.com', '.railway.app', '.herokuapp.com', '.vercel.app', '*'])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -64,10 +64,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ticketsite.wsgi.application'
 
+# Vercel filesystem compatibility for SQLite (Lambda has read-only root, writable /tmp)
+if os.environ.get('VERCEL'):
+    import shutil
+    tmp_db = Path('/tmp/db.sqlite3')
+    orig_db = BASE_DIR / 'db.sqlite3'
+    if not tmp_db.exists() and orig_db.exists():
+        try:
+            shutil.copyfile(orig_db, tmp_db)
+        except Exception:
+            pass
+    DB_PATH = tmp_db if tmp_db.exists() else orig_db
+else:
+    DB_PATH = BASE_DIR / 'db.sqlite3'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DB_PATH,
     }
 }
 
@@ -106,8 +120,14 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # Logging
-LOG_DIR = BASE_DIR / 'logs'
-LOG_DIR.mkdir(exist_ok=True)
+if os.environ.get('VERCEL'):
+    LOG_DIR = Path('/tmp/logs')
+else:
+    LOG_DIR = BASE_DIR / 'logs'
+try:
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+except Exception:
+    pass
 
 LOGGING = {
     'version': 1,
@@ -122,7 +142,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': LOG_DIR / 'ticketsite.log',
+            'filename': LOG_DIR / 'ticketsite.log' if LOG_DIR.exists() else '/tmp/ticketsite.log',
             'formatter': 'verbose',
         },
         'console': {
@@ -136,4 +156,11 @@ LOGGING = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'https://*.railway.app', 'https://*.herokuapp.com', 'http://127.0.0.1:8000', 'http://localhost:8000']
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'https://*.railway.app',
+    'https://*.herokuapp.com',
+    'https://*.vercel.app',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]

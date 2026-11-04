@@ -1,0 +1,8 @@
+venv/
+.venv/
+.git/
+*.pyc
+__pycache__/
+logs/
+.coverage
+htmlcov/
